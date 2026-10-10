@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tracker_shield_session">Privacy Lens Tracker Shield</string>
+    <string name="tracker_shield_channel">Tracker Shield</string>
+    <string name="tracker_shield_notification_title">Tracker Shield is on</string>
+    <string name="tracker_shield_notification_text">Blocking known tracker domains on this phone. Nothing is sent to Privacy Lens.</string>
+    <string name="tracker_shield_notification_stop">Turn off</string>
+</resources>

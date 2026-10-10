@@ -1,0 +1,487 @@
+{
+  "@@locale": "en",
+  "appTitle": "Privacy Lens",
+  "@appTitle": {
+    "description": "Application name shown in the launcher, task switcher, and top bar."
+  },
+  "appTagline": "Local on-device engine",
+  "localOnlyBanner": "Zero telemetry · 100% on-device",
+  "aboutTooltip": "How Privacy Lens works",
+  "aboutTitle": "How Privacy Lens works",
+  "aboutIntro": "Everything stays on this phone. There is no account and no network call of our own. Here is what a scan can and cannot see.",
+  "aboutPermissionsTitle": "Granted permissions",
+  "aboutPermissionsBody": "We read which sensitive permissions each app is currently allowed to use, not a history of each use.",
+  "aboutUsageTitle": "Foreground time",
+  "aboutUsageBody": "With Usage Access, we show how long an app was on screen and when it was last opened. Background sensor use is not visible.",
+  "aboutTrackersTitle": "Embedded libraries",
+  "aboutTrackersBody": "A local scan of each app package looks for known advertising and analytics SDKs.",
+  "aboutShieldTitle": "Tracker Shield",
+  "aboutShieldBody": "Optional DNS filter that blocks known tracker domains. Lookups that get through encrypted DNS or another VPN will not appear.",
+  "aboutLimitsTitle": "What we cannot see",
+  "aboutLimitsBody": "We cannot watch a permission being used in the background, read the clipboard of other apps, or see data leaving over HTTPS.",
+  "navHome": "Home",
+  "navApps": "Apps",
+  "navFindings": "Findings",
+  "navTrackers": "Trackers",
+  "navSettings": "Settings",
+  "loading": "Loading",
+  "retry": "Try again",
+  "errorTitle": "Something went wrong",
+  "cancel": "Cancel",
+  "continueAction": "Continue",
+  "skip": "Skip intro",
+  "back": "Back",
+  "close": "Close",
+  "done": "Done",
+  "notNow": "Not now",
+  "failureUsageAccess": "Usage Access is off, so foreground time is hidden. You can still scan permissions and trackers.",
+  "failureVpnConsent": "Tracker Shield needs the Android VPN consent dialog. Nothing is sent off the phone.",
+  "failurePlatform": "Android could not complete that request. Try again.",
+  "failureStorage": "The local vault could not be read. Try again, or wipe the vault from Settings if this keeps happening.",
+  "failureUnexpected": "An unexpected error stopped this action.",
+  "unknownRouteTitle": "Page not found",
+  "unknownRouteBody": "That link does not match a screen in Privacy Lens.",
+  "unknownRouteHome": "Go to Home",
+  "severityLow": "Low",
+  "severityMedium": "Medium",
+  "severityHigh": "High",
+  "riskMinimal": "Minimal risk",
+  "riskLow": "Low risk",
+  "riskMedium": "Medium risk",
+  "riskHigh": "High risk",
+  "postureCalm": "Calm",
+  "postureObservant": "Guarded and observant",
+  "postureNeedsAttention": "Needs attention",
+  "postureCalmHint": "No high-severity findings on this scan.",
+  "postureObservantHint": "A few items are worth a look.",
+  "postureNeedsAttentionHint": "Several high-severity items showed up on this scan.",
+  "capabilityCamera": "Camera",
+  "capabilityMicrophone": "Microphone",
+  "capabilityPreciseLocation": "Precise location",
+  "capabilityApproximateLocation": "Approximate location",
+  "capabilityBackgroundLocation": "Background location",
+  "capabilityContacts": "Contacts",
+  "capabilitySms": "SMS",
+  "capabilityCallLog": "Call log",
+  "capabilityPhone": "Phone",
+  "capabilityCalendar": "Calendar",
+  "capabilityBodySensors": "Body sensors",
+  "capabilityPhysicalActivity": "Physical activity",
+  "capabilityMediaAndFiles": "Media and files",
+  "capabilityNearbyDevices": "Nearby devices",
+  "specialAccessibility": "Accessibility service",
+  "specialNotificationListener": "Notification listener",
+  "specialDeviceAdmin": "Device admin",
+  "specialOverlay": "Display over other apps",
+  "categoryAdvertising": "Advertising",
+  "categoryAnalytics": "Analytics",
+  "categoryAttribution": "Attribution",
+  "categoryProfiling": "Profiling",
+  "categoryCrashReporting": "Crash reporting",
+  "findingSensorTrioTitle": "Camera, microphone, and location together",
+  "findingSensorTrioBody": "This app is allowed to use the camera, microphone, and location. That combination can record a lot about where you are and what is around you.",
+  "findingAccessibilityTitle": "Accessibility service is on",
+  "findingAccessibilityBody": "An accessibility service can read what is on the screen. Review this if you did not turn it on yourself.",
+  "findingNotificationListenerTitle": "Notification listener is on",
+  "findingNotificationListenerBody": "This app can read the text of your notifications, including one-time codes and message previews.",
+  "findingDeviceAdminTitle": "Device administrator is on",
+  "findingDeviceAdminBody": "A device admin can lock the phone or erase data. Keep this only if you trust the app.",
+  "findingOverlayTitle": "Overlay plus accessibility",
+  "findingOverlayBody": "This app can draw over other apps and also use accessibility. That pairing can hide or mimic system prompts.",
+  "findingBackgroundLocationTitle": "Background location is allowed",
+  "findingBackgroundLocationBody": "This app can keep reading location when it is not on screen. Android settings can limit it to while in use.",
+  "findingMessagesTitle": "Messages or call logs are allowed",
+  "findingMessagesBody": "This app can read SMS or call history. That is private communication, not just a contact list.",
+  "findingEmbeddedTrackersTitle": "Known tracker libraries inside the app",
+  "findingEmbeddedTrackersBody": "The app package contains advertising or analytics SDKs. Those libraries can send usage signals when the app has a network path.",
+  "findingTrackerDomainsTitle": "Contacts with tracker domains",
+  "findingTrackerDomainsBody": "Tracker Shield blocked DNS lookups to known advertising or analytics hosts from this app.",
+  "findingUnusedTitle": "Unused app still holds sensitive access",
+  "findingUnusedBody": "This app has not been opened in about 90 days and still holds sensitive permissions. Android can reset unused permissions from App info.",
+  "actionOpenSettings": "Open Android app settings",
+  "actionEnableShield": "Turn on Tracker Shield",
+  "findingWhy": "Why this matters",
+  "onboardingPage1Eyebrow": "On-device audit",
+  "onboardingPage1Title": "See what apps are allowed to use.",
+  "onboardingPage1Body": "Privacy Lens maps granted permissions, unused apps with sensitive access, and known tracker libraries. The work stays on this phone.",
+  "onboardingPage1Item1Title": "Permission inventory",
+  "onboardingPage1Item1Body": "Groups camera, microphone, location, and other sensitive grants.",
+  "onboardingPage1Item2Title": "Embedded trackers",
+  "onboardingPage1Item2Body": "Finds known commercial tracking SDKs inside each app package.",
+  "onboardingPage2Eyebrow": "Usage Access",
+  "onboardingPage2Title": "Foreground time needs a system grant.",
+  "onboardingPage2Body": "Android only shares how long an app was on screen after you turn on Usage Access for Privacy Lens. You can skip this and still scan permissions.",
+  "onboardingRestrictedTitle": "Sideloaded installs may need an extra step",
+  "onboardingRestrictedBody": "On Android 13 and later, open App info, tap the menu, and choose Allow restricted settings. Then you can enable Usage Access.",
+  "onboardingGrantUsage": "Open Usage Access",
+  "onboardingOpenAppInfo": "Open App info first",
+  "onboardingUsageGranted": "Usage Access is on",
+  "onboardingPage3Eyebrow": "Optional filter",
+  "onboardingPage3Title": "Block tracker domains on this phone.",
+  "onboardingPage3Body": "Tracker Shield is a local DNS filter. Android will show a VPN consent screen. No browsing data is sent to us.",
+  "onboardingStartShield": "Turn on Tracker Shield",
+  "onboardingSkipShield": "Skip for now",
+  "onboardingFinish": "Start using Privacy Lens",
+  "homeSectionLabel": "Dashboard",
+  "homeDevicePosture": "Device posture",
+  "homeAppsAudited": "{count, plural, =1{1 app audited} other{{count} apps audited}}",
+  "@homeAppsAudited": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homePostureSummary": "{apps} apps audited. {micCamera} have the microphone or camera allowed, and {trackers} contain known tracking libraries.",
+  "@homePostureSummary": {
+    "placeholders": {
+      "apps": { "type": "int" },
+      "micCamera": { "type": "int" },
+      "trackers": { "type": "int" }
+    }
+  },
+  "homeRunAudit": "Run full audit",
+  "homeLastScanned": "Last scanned {when}",
+  "@homeLastScanned": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "homeNeverScanned": "No scan yet",
+  "homeScanning": "Scanning…",
+  "homeTelemetryGlimpse": "Capability glimpse",
+  "homeAppsWithLocation": "Apps with location",
+  "homeAppsWithMicrophone": "Apps with microphone",
+  "homeTrackersBlocked": "Lookups blocked",
+  "homeKeyDiscoveries": "Key discoveries",
+  "homeViewAll": "View all",
+  "homeEmptyTitle": "Run your first audit",
+  "homeEmptyBody": "A scan reads installed apps, granted permissions, and known tracker libraries. Nothing leaves this phone.",
+  "homeUsageAccessRequiredTitle": "Usage Access is off",
+  "homeUsageAccessRequiredBody": "Foreground time and unused-app findings need Usage Access. Permissions and tracker libraries still scan without it.",
+  "homeLocalFooter": "Every audit runs locally on your processor.",
+  "homeReviewPermissions": "Review permissions",
+  "homeViewLog": "View log",
+  "homeCleanup": "Review unused",
+  "homeDiscoveryNeedsAttention": "Needs attention",
+  "homeDiscoveryTracker": "Tracker alert",
+  "homeDiscoveryHygiene": "Low severity",
+  "homeInstalledDaysAgo": "Installed {count, plural, =1{1 day} other{{count} days}} ago",
+  "@homeInstalledDaysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homeActiveMinutesAgo": "Active {count, plural, =1{1 minute} other{{count} minutes}} ago",
+  "@homeActiveMinutesAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homeUnusedAppsTitle": "{count, plural, =1{1 unused app} other{{count} unused apps}}",
+  "@homeUnusedAppsTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homeNoUsageDays": "No opens in 90+ days",
+  "homeRequestsNeutralized": "Blocked by the local filter",
+  "homeRiskyPermissions": "{count, plural, =1{1 risky permission} other{{count} risky permissions}}",
+  "@homeRiskyPermissions": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appsSectionLabel": "App audit",
+  "appsSearchHint": "Search installed apps",
+  "appsFilterAll": "All ({count})",
+  "@appsFilterAll": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appsFilterHighRisk": "High risk ({count})",
+  "@appsFilterHighRisk": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appsFilterCamera": "Camera ({count})",
+  "@appsFilterCamera": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appsFilterMicrophone": "Microphone ({count})",
+  "@appsFilterMicrophone": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appsMonitored": "{count, plural, =1{1 app} other{{count} apps}}",
+  "@appsMonitored": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appsRescan": "Re-scan",
+  "appsEmptyTitle": "No apps in this view",
+  "appsEmptyBody": "Run an audit from Home, or change the system-app toggle in Settings.",
+  "appsNoMatchTitle": "No matching apps",
+  "appsNoMatchBody": "Try another search or filter.",
+  "appsTrackersCount": "{count, plural, =0{No trackers} =1{1 embedded tracker} other{{count} embedded trackers}}",
+  "@appsTrackersCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "appsNoNetwork": "No network permission",
+  "appsSelectHint": "Choose an app to see permissions, usage, and libraries.",
+  "detailTitle": "App details",
+  "detailElevatedAttention": "Elevated attention",
+  "detailUsage": "Screen time",
+  "detailScanDay": "On the day of the last scan",
+  "detailForeground": "{time} foreground",
+  "@detailForeground": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "detailTrackers": "Embedded analytics and trackers",
+  "detailLibraries": "{count, plural, =1{1 library} other{{count} libraries}}",
+  "@detailLibraries": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "detailPermissions": "Declared hardware and data access",
+  "detailGranted": "{count, plural, =1{1 granted} other{{count} granted}}",
+  "@detailGranted": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "detailOpenSettings": "Open Android app settings",
+  "detailOpenSettingsHint": "Revoke permissions or restrict background access in Android.",
+  "detailNotFound": "That app is not in the latest scan.",
+  "detailVersion": "v{version}",
+  "@detailVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "detailSystemApp": "System app",
+  "detailNoTrackers": "No known tracker libraries in this package.",
+  "detailNoPermissions": "No sensitive permissions granted.",
+  "detailLastUsed": "Last opened {when}",
+  "@detailLastUsed": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "detailNeverUsed": "Not opened in the last 120 days",
+  "detailUsageUnavailable": "Foreground time needs Usage Access.",
+  "findingsSectionLabel": "Audit report",
+  "findingsIdentified": "{count, plural, =1{1 item identified} other{{count} items identified}} across installed applications.",
+  "@findingsIdentified": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "findingsFilterAll": "All ({count})",
+  "@findingsFilterAll": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "findingsFilterHigh": "High priority ({count})",
+  "@findingsFilterHigh": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "findingsFilterTrackers": "Trackers ({count})",
+  "@findingsFilterTrackers": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "findingsFilterPermissions": "Permissions ({count})",
+  "@findingsFilterPermissions": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "findingsEmptyTitle": "Audit is clear",
+  "findingsEmptyBody": "No findings from the latest scan. Run another audit after you install or update apps.",
+  "findingsHighPriority": "High priority",
+  "findingsMediumPriority": "Medium priority",
+  "findingsHygiene": "Digital hygiene",
+  "findingsAppCount": "{count, plural, =1{1 app} other{{count} apps}}",
+  "@findingsAppCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "trackersSectionLabel": "Network trackers",
+  "shieldTitle": "Tracker Shield",
+  "shieldActive": "Active",
+  "shieldOff": "Off",
+  "shieldDescription": "A local DNS filter on this phone. Android shows it as a VPN because that is the only hook for filtering lookups. No packets of ours leave the device.",
+  "shieldDomainsBlocked": "Domains blocked",
+  "shieldAppsMonitored": "Apps attributed",
+  "shieldNoDataSent": "Sent by us",
+  "shieldNoDataSentValue": "None",
+  "shieldHourlyTitle": "Blocked lookups today",
+  "shieldSearchHint": "Search blocked domains or apps",
+  "shieldFilterAll": "All ({count})",
+  "@shieldFilterAll": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "shieldBlockedTimes": "Blocked {count}×",
+  "@shieldBlockedTimes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "shieldUnknownApp": "App not attributed",
+  "shieldBlocklistVersion": "Blocklist {version}",
+  "@shieldBlocklistVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "shieldRulesCount": "{count, plural, =1{1 rule} other{{count} rules}} shipped with this version",
+  "@shieldRulesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "shieldLimitsTitle": "What can slip past",
+  "shieldLimitPrivateDns": "Strict Private DNS in Android settings bypasses this filter.",
+  "shieldLimitDoh": "Apps that resolve names over their own encrypted DNS will not appear here.",
+  "shieldLimitOtherVpn": "Another active VPN takes over the tunnel, so this shield pauses.",
+  "shieldEmptyTitle": "No blocked lookups yet",
+  "shieldEmptyBody": "Turn the shield on, then use other apps as usual. Only blocked tracker domains are stored.",
+  "shieldStartFailed": "Tracker Shield could not start.",
+  "shieldConsentDenied": "VPN consent was declined. The shield stayed off.",
+  "settingsSectionLabel": "Privacy settings",
+  "settingsDataControl": "Data and autonomy",
+  "settingsVaultSecure": "Sandbox vault",
+  "settingsEncrypted": "Encrypted with SQLCipher",
+  "settingsVaultSize": "{size} used",
+  "@settingsVaultSize": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "settingsRetentionTitle": "Audit history retention",
+  "settingsRetentionBody": "Scans and usage older than this window are deleted automatically. The latest scan is kept.",
+  "settingsRetentionDays": "{count} days",
+  "@settingsRetentionDays": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "settingsDnsRetentionTitle": "Tracker log auto-cleanup",
+  "settingsDnsRetentionBody": "Blocked DNS rows older than this window are deleted.",
+  "settingsDnsDaily": "1 day",
+  "settingsDnsWeekly": "7 days",
+  "settingsIncludeSystemTitle": "Include system apps",
+  "settingsIncludeSystemBody": "Adds preinstalled packages to the next scan. Most people can leave this off.",
+  "settingsExportTitle": "Export audit report",
+  "settingsExportBody": "Writes a file you choose. The file never leaves the phone unless you share it.",
+  "settingsExportJson": "Export JSON",
+  "settingsExportCsv": "Export CSV",
+  "settingsExportEmpty": "Run an audit before exporting.",
+  "settingsExportSaved": "Report saved.",
+  "settingsExportCanceled": "Export canceled.",
+  "settingsWipeTitle": "Delete all stored audit data",
+  "settingsWipeBody": "Purges scans, findings, usage, and blocked lookup logs, then re-encrypts the vault.",
+  "settingsWipeAction": "Wipe data vault",
+  "settingsWipeConfirmTitle": "Wipe the vault?",
+  "settingsWipeConfirmBody": "This cannot be undone. You will need to run a new audit.",
+  "settingsTransparency": "Transparency and architecture",
+  "settingsInternetTitle": "INTERNET is used only for DNS",
+  "settingsInternetBody": "The INTERNET permission exists so Tracker Shield can forward allowed DNS lookups to your network. Privacy Lens never opens its own connections.",
+  "settingsHowItWorks": "How Privacy Lens works",
+  "settingsAppearance": "Appearance",
+  "settingsTheme": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "settingsVersion": "Privacy Lens {version} · 100% local",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "settingsPowerModeLocked": "Power mode",
+  "settingsPowerModeHint": "Deeper inspection is planned. It is locked in this version.",
+  "settingsComingLater": "Coming later",
+  "scanCollecting": "Reading installed apps…",
+  "scanScanningPackages": "Scanning packages {scanned} of {total}",
+  "@scanScanningPackages": {
+    "placeholders": {
+      "scanned": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "scanAnalyzing": "Evaluating findings…",
+  "relativeJustNow": "just now",
+  "relativeMinutesAgo": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+  "@relativeMinutesAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "relativeHoursAgo": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@relativeHoursAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "relativeDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@relativeDaysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "relativeToday": "today at {time}",
+  "@relativeToday": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "durationMinutes": "{count}m",
+  "@durationMinutes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "durationHoursMinutes": "{hours}h {minutes}m",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": { "type": "int" },
+      "minutes": { "type": "int" }
+    }
+  },
+  "sizeBytes": "{count} B",
+  "@sizeBytes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "sizeKilobytes": "{count} KB",
+  "@sizeKilobytes": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "sizeMegabytes": "{count} MB",
+  "@sizeMegabytes": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  }
+}
