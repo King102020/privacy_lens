@@ -19,7 +19,6 @@ class ToneColors {
   );
 }
 
-/// Restrained severity palette from DESIGN.md: sage, ochre, rose.
 @immutable
 class SeverityColors extends ThemeExtension<SeverityColors> {
   const SeverityColors({
@@ -34,9 +33,9 @@ class SeverityColors extends ThemeExtension<SeverityColors> {
 
   static const SeverityColors light = SeverityColors(
     low: ToneColors(
-      accent: Color(0xFF10B981),
-      container: Color(0xFFD1FAE5),
-      onContainer: Color(0xFF065F46),
+      accent: Color(0xFF64748B),
+      container: Color(0xFFE2E8F0),
+      onContainer: Color(0xFF334155),
     ),
     medium: ToneColors(
       accent: Color(0xFFD97706),
@@ -52,9 +51,9 @@ class SeverityColors extends ThemeExtension<SeverityColors> {
 
   static const SeverityColors dark = SeverityColors(
     low: ToneColors(
-      accent: Color(0xFF34D399),
-      container: Color(0xFF064E3B),
-      onContainer: Color(0xFFA7F3D0),
+      accent: Color(0xFF94A3B8),
+      container: Color(0xFF1E293B),
+      onContainer: Color(0xFFE2E8F0),
     ),
     medium: ToneColors(
       accent: Color(0xFFFBBF24),

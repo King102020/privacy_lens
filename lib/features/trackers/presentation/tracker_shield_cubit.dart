@@ -24,54 +24,82 @@ final class TrackerShieldReady extends TrackerShieldState {
   const TrackerShieldReady({
     required this.status,
     required this.activity,
+    required this.policy,
     this.query = '',
     this.category,
+    this.sort = ShieldSort.hits,
     this.busy = false,
     this.notice,
   });
 
   final TrackerShieldStatus status;
   final ShieldActivity activity;
+  final ShieldPolicy policy;
   final String query;
   final TrackerCategory? category;
+  final ShieldSort sort;
   final bool busy;
   final ShieldNotice? notice;
 
   List<BlockedDomainSummary> get visible {
     final needle = query.trim().toLowerCase();
-    return [
+    final matches = [
       for (final item in activity.summaries)
         if ((category == null || item.category == category) &&
             (needle.isEmpty ||
                 item.domain.contains(needle) ||
-                (item.packageName?.contains(needle) ?? false)))
+                (item.packageName?.contains(needle) ?? false) ||
+                (item.category?.name.contains(needle) ?? false)))
           item,
     ];
+    matches.sort(
+      (a, b) => switch (sort) {
+        ShieldSort.hits => b.count.compareTo(a.count),
+        ShieldSort.recent => b.lastBlockedAt.compareTo(a.lastBlockedAt),
+        ShieldSort.name => a.domain.compareTo(b.domain),
+      },
+    );
+    return matches;
   }
 
   TrackerShieldReady copyWith({
     TrackerShieldStatus? status,
     ShieldActivity? activity,
+    ShieldPolicy? policy,
     String? query,
     TrackerCategory? category,
     bool clearCategory = false,
+    ShieldSort? sort,
     bool? busy,
     ShieldNotice? notice,
     bool clearNotice = false,
   }) => TrackerShieldReady(
     status: status ?? this.status,
     activity: activity ?? this.activity,
+    policy: policy ?? this.policy,
     query: query ?? this.query,
     category: clearCategory ? null : category ?? this.category,
+    sort: sort ?? this.sort,
     busy: busy ?? this.busy,
     notice: clearNotice ? null : notice ?? this.notice,
   );
 
   @override
-  List<Object?> get props => [status, activity, query, category, busy, notice];
+  List<Object?> get props => [
+    status,
+    activity,
+    policy,
+    query,
+    category,
+    sort,
+    busy,
+    notice,
+  ];
 }
 
-enum ShieldNotice { consentDenied }
+enum ShieldSort { hits, recent, name }
+
+enum ShieldNotice { consentDenied, invalidDomain }
 
 final class TrackerShieldFailure extends TrackerShieldState {
   const TrackerShieldFailure(this.failure);
@@ -95,9 +123,11 @@ class TrackerShieldCubit extends Cubit<TrackerShieldState> {
     if (_refreshing) return;
     _refreshing = true;
     try {
+      await _repository.applyPolicy();
       await _repository.importBlockedEvents();
       final status = await _repository.getStatus();
       final activity = await _repository.loadActivity();
+      final policy = _repository.currentPolicy();
       if (isClosed) return;
       if (status case Err(:final failure)) {
         emit(TrackerShieldFailure(failure));
@@ -110,6 +140,7 @@ class TrackerShieldCubit extends Cubit<TrackerShieldState> {
       final ready = TrackerShieldStatusReady(
         (status as Ok<TrackerShieldStatus>).value,
         (activity as Ok<ShieldActivity>).value,
+        policy,
       );
       final current = state;
       emit(
@@ -117,12 +148,14 @@ class TrackerShieldCubit extends Cubit<TrackerShieldState> {
             ? current.copyWith(
                 status: ready.status,
                 activity: ready.activity,
+                policy: ready.policy,
                 busy: false,
                 clearNotice: true,
               )
             : TrackerShieldReady(
                 status: ready.status,
                 activity: ready.activity,
+                policy: ready.policy,
               ),
       );
       _syncTimer();
@@ -144,15 +177,19 @@ class TrackerShieldCubit extends Cubit<TrackerShieldState> {
           if (state case TrackerShieldReady(
             :final status,
             :final activity,
+            :final policy,
             :final query,
             :final category,
+            :final sort,
           )) {
             emit(
               TrackerShieldReady(
                 status: status,
                 activity: activity,
+                policy: policy,
                 query: query,
                 category: category,
+                sort: sort,
                 notice: ShieldNotice.consentDenied,
               ),
             );
@@ -187,12 +224,82 @@ class TrackerShieldCubit extends Cubit<TrackerShieldState> {
     }
   }
 
+  void setSort(ShieldSort sort) {
+    final current = state;
+    if (current is TrackerShieldReady) {
+      emit(current.copyWith(sort: sort));
+    }
+  }
+
   void setCategory(TrackerCategory? category) {
     final current = state;
     if (current is TrackerShieldReady) {
       emit(
         current.copyWith(category: category, clearCategory: category == null),
       );
+    }
+  }
+
+  Future<void> setCategoryEnabled(
+    TrackerCategory category,
+    bool enabled,
+  ) async {
+    final current = state;
+    if (current is TrackerShieldReady) {
+      emit(current.copyWith(busy: true, clearNotice: true));
+    }
+    final result = await _repository.setCategoryEnabled(category, enabled);
+    if (isClosed) return;
+    switch (result) {
+      case Ok():
+        await refresh();
+      case Err(:final failure):
+        emit(TrackerShieldFailure(failure));
+    }
+  }
+
+  Future<void> addCustomDomain(String raw, {required bool allow}) async {
+    final current = state;
+    if (current is TrackerShieldReady) {
+      emit(current.copyWith(busy: true, clearNotice: true));
+    }
+    final result = await _repository.addCustomDomain(raw, allow: allow);
+    if (isClosed) return;
+    switch (result) {
+      case Ok(:final value):
+        if (!value) {
+          if (state case final TrackerShieldReady ready) {
+            emit(
+              ready.copyWith(busy: false, notice: ShieldNotice.invalidDomain),
+            );
+          }
+          return;
+        }
+        await refresh();
+      case Err(:final failure):
+        emit(TrackerShieldFailure(failure));
+    }
+  }
+
+  Future<void> removeCustomDomain(String domain) async {
+    final result = await _repository.removeCustomDomain(domain);
+    if (isClosed) return;
+    switch (result) {
+      case Ok():
+        await refresh();
+      case Err(:final failure):
+        emit(TrackerShieldFailure(failure));
+    }
+  }
+
+  Future<void> allowDomain(String domain) async {
+    final result = await _repository.allowDomain(domain);
+    if (isClosed) return;
+    switch (result) {
+      case Ok():
+        await refresh();
+      case Err(:final failure):
+        emit(TrackerShieldFailure(failure));
     }
   }
 
@@ -212,8 +319,9 @@ class TrackerShieldCubit extends Cubit<TrackerShieldState> {
 }
 
 class TrackerShieldStatusReady {
-  const TrackerShieldStatusReady(this.status, this.activity);
+  const TrackerShieldStatusReady(this.status, this.activity, this.policy);
 
   final TrackerShieldStatus status;
   final ShieldActivity activity;
+  final ShieldPolicy policy;
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,7 +10,6 @@ import '../../../shared/presentation/failure_text.dart';
 import '../../../shared/presentation/formatters.dart';
 import '../../../shared/widgets/about_sheet.dart';
 import '../../../shared/widgets/lens_app_bar.dart';
-import '../../../shared/widgets/local_only_banner.dart';
 import '../../../shared/widgets/page_padding.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/state_views.dart';
@@ -27,33 +28,26 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: const LensAppBar(),
       body: ConstrainedContent(
-        child: Column(
-          children: [
-            LocalOnlyBanner(sectionLabel: context.l10n.settingsSectionLabel),
-            Expanded(
-              child: BlocConsumer<DataVaultCubit, DataVaultState>(
-                listenWhen: (previous, current) =>
-                    current is DataVaultReady && current.notice != null,
-                listener: (context, state) {
-                  if (state is! DataVaultReady || state.notice == null) return;
-                  final l10n = context.l10n;
-                  context.showSnack(switch (state.notice!) {
-                    VaultNotice.exportSaved => l10n.settingsExportSaved,
-                    VaultNotice.exportCanceled => l10n.settingsExportCanceled,
-                    VaultNotice.exportEmpty => l10n.settingsExportEmpty,
-                  });
-                },
-                builder: (context, vault) => switch (vault) {
-                  DataVaultLoading() => const LoadingView(),
-                  DataVaultFailure(:final failure) => ErrorView(
-                    message: failure.message(context.l10n),
-                    onRetry: () => context.read<DataVaultCubit>().load(),
-                  ),
-                  DataVaultReady() => _Body(vault: vault),
-                },
-              ),
+        child: BlocConsumer<DataVaultCubit, DataVaultState>(
+          listenWhen: (previous, current) =>
+              current is DataVaultReady && current.notice != null,
+          listener: (context, state) {
+            if (state is! DataVaultReady || state.notice == null) return;
+            final l10n = context.l10n;
+            context.showSnack(switch (state.notice!) {
+              VaultNotice.exportSaved => l10n.settingsExportSaved,
+              VaultNotice.exportCanceled => l10n.settingsExportCanceled,
+              VaultNotice.exportEmpty => l10n.settingsExportEmpty,
+            });
+          },
+          builder: (context, vault) => switch (vault) {
+            DataVaultLoading() => const LoadingView(),
+            DataVaultFailure(:final failure) => ErrorView(
+              message: failure.message(context.l10n),
+              onRetry: () => context.read<DataVaultCubit>().load(),
             ),
-          ],
+            DataVaultReady() => _Body(vault: vault),
+          },
         ),
       ),
     );
@@ -197,6 +191,29 @@ class _Body extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(l10n.settingsInternetBody),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        SurfaceCard(
+          onTap: () =>
+              unawaited(context.read<SettingsCubit>().replayTabGuides()),
+          child: Row(
+            children: [
+              const Icon(Icons.tips_and_updates_outlined),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.settingsReplayTips),
+                    Text(
+                      l10n.settingsReplayTipsBody,
+                      style: context.textStyles.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

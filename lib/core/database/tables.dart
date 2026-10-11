@@ -1,7 +1,5 @@
 import 'package:drift/drift.dart';
 
-/// All DateTime columns are stored as Unix timestamps, which are UTC.
-
 class Scans extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get startedAt => dateTime()();
@@ -24,9 +22,6 @@ class Apps extends Table {
   TextColumn get iconPath => text().nullable()();
   BoolColumn get requestsInternet => boolean()();
   DateTimeColumn get lastUsedAt => dateTime().nullable()();
-
-  /// `versionCode:lastUpdate:rulePackVersion` of the last tracker SDK scan.
-  /// A package is rescanned only when this changes.
   TextColumn get trackerScanKey => text().nullable()();
 
   @override
@@ -59,7 +54,6 @@ class UsageDaily extends Table {
   TextColumn get packageName =>
       text().references(Apps, #packageName, onDelete: KeyAction.cascade)();
 
-  /// Start of the user's local day.
   DateTimeColumn get day => dateTime()();
   IntColumn get foregroundMs => integer()();
 
@@ -77,15 +71,11 @@ class TrackerSdkMatches extends Table {
   Set<Column<Object>> get primaryKey => {packageName, trackerId};
 }
 
-/// Tracker domains blocked by Tracker Shield. Allowed lookups are never stored.
 @DataClassName('DnsEventRow')
 class DnsEvents extends Table {
-  /// Id assigned by the native event store, used to import exactly once.
   IntColumn get id => integer()();
   DateTimeColumn get occurredAt => dateTime()();
   TextColumn get domain => text()();
-
-  /// Null when Android could not attribute the lookup to an app.
   TextColumn get packageName => text().nullable()();
 
   @override

@@ -9,7 +9,6 @@ import '../../../shared/presentation/failure_text.dart';
 import '../../../shared/presentation/label_maps.dart';
 import '../../../shared/widgets/app_icon.dart';
 import '../../../shared/widgets/lens_app_bar.dart';
-import '../../../shared/widgets/local_only_banner.dart';
 import '../../../shared/widgets/page_padding.dart';
 import '../../../shared/widgets/permission_chip.dart';
 import '../../../shared/widgets/severity_badge.dart';
@@ -45,62 +44,52 @@ class _AppsView extends StatelessWidget {
     return Scaffold(
       appBar: const LensAppBar(),
       body: ConstrainedContent(
-        child: Column(
-          children: [
-            LocalOnlyBanner(sectionLabel: context.l10n.appsSectionLabel),
-            Expanded(
-              child: BlocBuilder<AuditCubit, AuditState>(
-                builder: (context, audit) {
-                  final report = audit.report;
-                  if (audit is AuditLoading ||
-                      (audit is AuditScanning && report == null)) {
-                    return const LoadingView();
-                  }
-                  if (audit is AuditFailure && report == null) {
-                    return ErrorView(
-                      message: audit.failure.message(context.l10n),
-                      onRetry: () => context.read<AuditCubit>().loadLatest(),
-                    );
-                  }
-                  if (report == null) {
-                    return MessageView(
-                      icon: Icons.apps_outlined,
-                      title: context.l10n.appsEmptyTitle,
-                      message: context.l10n.appsEmptyBody,
-                      actionLabel: context.l10n.homeRunAudit,
-                      onAction: () => context.read<AuditCubit>().scan(),
-                    );
-                  }
-                  if (wide) {
-                    return Row(
-                      children: [
-                        SizedBox(
-                          width: AppBreakpoints.listPaneWidth,
-                          child: _AppsList(
-                            report: report,
-                            selectedPackage: selectedPackage,
-                          ),
-                        ),
-                        const VerticalDivider(width: 1),
-                        Expanded(
-                          child: selectedPackage == null
-                              ? Center(child: Text(context.l10n.appsSelectHint))
-                              : AppDetailPane(packageName: selectedPackage!),
-                        ),
-                      ],
-                    );
-                  }
-                  if (selectedPackage != null) {
-                    return AppDetailPane(packageName: selectedPackage!);
-                  }
-                  return _AppsList(
-                    report: report,
-                    selectedPackage: selectedPackage,
-                  );
-                },
-              ),
-            ),
-          ],
+        child: BlocBuilder<AuditCubit, AuditState>(
+          builder: (context, audit) {
+            final report = audit.report;
+            if (audit is AuditLoading ||
+                (audit is AuditScanning && report == null)) {
+              return const LoadingView();
+            }
+            if (audit is AuditFailure && report == null) {
+              return ErrorView(
+                message: audit.failure.message(context.l10n),
+                onRetry: () => context.read<AuditCubit>().loadLatest(),
+              );
+            }
+            if (report == null) {
+              return MessageView(
+                icon: Icons.apps_outlined,
+                title: context.l10n.appsEmptyTitle,
+                message: context.l10n.appsEmptyBody,
+                actionLabel: context.l10n.homeRunAudit,
+                onAction: () => context.read<AuditCubit>().scan(),
+              );
+            }
+            if (wide) {
+              return Row(
+                children: [
+                  SizedBox(
+                    width: AppBreakpoints.listPaneWidth,
+                    child: _AppsList(
+                      report: report,
+                      selectedPackage: selectedPackage,
+                    ),
+                  ),
+                  const VerticalDivider(width: 1),
+                  Expanded(
+                    child: selectedPackage == null
+                        ? Center(child: Text(context.l10n.appsSelectHint))
+                        : AppDetailPane(packageName: selectedPackage!),
+                  ),
+                ],
+              );
+            }
+            if (selectedPackage != null) {
+              return AppDetailPane(packageName: selectedPackage!);
+            }
+            return _AppsList(report: report, selectedPackage: selectedPackage);
+          },
         ),
       ),
     );

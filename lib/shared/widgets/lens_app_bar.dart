@@ -5,7 +5,6 @@ import '../../core/design_system/app_spacing.dart';
 import '../extensions/context_extensions.dart';
 import 'about_sheet.dart';
 
-/// Top bar shared by the five main tabs.
 class LensAppBar extends StatelessWidget implements PreferredSizeWidget {
   const LensAppBar({super.key, this.actions = const []});
 
@@ -40,24 +39,22 @@ class LensAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           const SizedBox(width: AppSpacing.smd),
           Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(l10n.appTitle, style: context.textStyles.titleLarge),
-                Text(
-                  l10n.appTagline,
-                  style: context.textStyles.labelMedium?.copyWith(
-                    color: context.colors.primary,
-                  ),
-                ),
-              ],
-            ),
+            child: Text(l10n.appTitle, style: context.textStyles.titleLarge),
           ),
         ],
       ),
       actions: [
         ...actions,
+        Tooltip(
+          message: l10n.appTagline,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+            child: Icon(
+              Icons.lock_outline,
+              color: context.colors.onSurfaceVariant,
+            ),
+          ),
+        ),
         IconButton(
           tooltip: l10n.aboutTooltip,
           icon: const Icon(Icons.help_outline),

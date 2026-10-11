@@ -50,6 +50,14 @@ class TrackerShieldApiImpl(
         eventStore.deleteUpTo(id)
     }
 
+    override fun applyPolicy(
+        enabledCategories: List<String>,
+        extraBlocked: List<String>,
+        allowed: List<String>,
+    ) {
+        Blocklist.get(activity).applyPolicy(enabledCategories, extraBlocked, allowed)
+    }
+
     /** The shield works without it; the permission only makes its notification visible. */
     private fun requestNotificationPermissionIfNeeded() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return

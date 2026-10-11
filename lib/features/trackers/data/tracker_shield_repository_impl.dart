@@ -6,7 +6,9 @@ import '../../../core/errors/result.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/platform/device_api.g.dart';
 import '../../../core/platform/tracker_shield_data_source.dart';
+import '../../../core/preferences/app_preferences.dart';
 import '../../../core/utils/dates.dart';
+import '../../audit/domain/entities/tracker_sdk.dart';
 import '../domain/tracker_shield_entities.dart';
 import '../domain/tracker_shield_repository.dart';
 import 'tracker_domain_catalog.dart';
@@ -16,11 +18,13 @@ class TrackerShieldRepositoryImpl implements TrackerShieldRepository {
     required TrackerShieldDataSource dataSource,
     required AppDatabase database,
     required TrackerDomainCatalog catalog,
+    required AppPreferences preferences,
     required AppLogger logger,
     DateTime Function() clock = DateTime.now,
   }) : _dataSource = dataSource,
        _db = database,
        _catalog = catalog,
+       _preferences = preferences,
        _logger = logger,
        _clock = clock;
 
@@ -30,6 +34,7 @@ class TrackerShieldRepositoryImpl implements TrackerShieldRepository {
   final TrackerShieldDataSource _dataSource;
   final AppDatabase _db;
   final TrackerDomainCatalog _catalog;
+  final AppPreferences _preferences;
   final AppLogger _logger;
   final DateTime Function() _clock;
 
@@ -51,7 +56,14 @@ class TrackerShieldRepositoryImpl implements TrackerShieldRepository {
   }
 
   @override
-  Future<Result<bool>> start() => _dataSource.start();
+  Future<Result<bool>> start() async {
+    final started = await _dataSource.start();
+    if (started case Ok(value: true)) {
+      final applied = await applyPolicy();
+      if (applied is Err) return Err(applied.failure);
+    }
+    return started;
+  }
 
   @override
   Future<Result<void>> stop() => _dataSource.stop();
@@ -169,5 +181,101 @@ class TrackerShieldRepositoryImpl implements TrackerShieldRepository {
       );
       return const Err(StorageFailure());
     }
+  }
+
+  @override
+  ShieldPolicy currentPolicy() {
+    final enabled = <TrackerCategory>{
+      for (final name in _preferences.enabledShieldCategories)
+        if (TrackerCategory.values.asNameMap()[name] case final category?
+            when TrackerDomainCatalog.shieldCategories.contains(category))
+          category,
+    };
+    return ShieldPolicy(
+      enabledCategories: enabled,
+      extraBlocked: _preferences.customBlockedDomains,
+      allowed: _preferences.customAllowedDomains,
+      countsByCategory: _catalog.countsByCategory,
+    );
+  }
+
+  @override
+  Future<Result<void>> applyPolicy() {
+    final policy = currentPolicy();
+    return _dataSource.applyPolicy(
+      enabledCategories: [
+        for (final category in policy.enabledCategories) category.name,
+      ],
+      extraBlocked: policy.extraBlocked,
+      allowed: policy.allowed,
+    );
+  }
+
+  @override
+  Future<Result<void>> setCategoryEnabled(
+    TrackerCategory category,
+    bool enabled,
+  ) async {
+    final next = currentPolicy().enabledCategories.toSet();
+    if (enabled) {
+      next.add(category);
+    } else {
+      next.remove(category);
+    }
+    await _preferences.setEnabledShieldCategories([
+      for (final item in next) item.name,
+    ]);
+    return applyPolicy();
+  }
+
+  @override
+  Future<Result<bool>> addCustomDomain(
+    String raw, {
+    required bool allow,
+  }) async {
+    final host = AppPreferences.tryParseHostname(raw);
+    if (host == null) return const Ok(false);
+    await _writeCustomDomain(host, allow: allow);
+    final applied = await applyPolicy();
+    return switch (applied) {
+      Ok() => const Ok(true),
+      Err(:final failure) => Err(failure),
+    };
+  }
+
+  @override
+  Future<Result<void>> removeCustomDomain(String domain) async {
+    final host = domain.toLowerCase();
+    await _preferences.setCustomBlockedDomains([
+      for (final item in _preferences.customBlockedDomains)
+        if (item != host) item,
+    ]);
+    await _preferences.setCustomAllowedDomains([
+      for (final item in _preferences.customAllowedDomains)
+        if (item != host) item,
+    ]);
+    return applyPolicy();
+  }
+
+  @override
+  Future<Result<void>> allowDomain(String domain) async {
+    final host = AppPreferences.tryParseHostname(domain);
+    if (host == null) return const Ok(null);
+    await _writeCustomDomain(host, allow: true);
+    return applyPolicy();
+  }
+
+  Future<void> _writeCustomDomain(String host, {required bool allow}) async {
+    final blocked = _preferences.customBlockedDomains.toSet();
+    final allowed = _preferences.customAllowedDomains.toSet();
+    if (allow) {
+      allowed.add(host);
+      blocked.remove(host);
+    } else {
+      blocked.add(host);
+      allowed.remove(host);
+    }
+    await _preferences.setCustomBlockedDomains(blocked);
+    await _preferences.setCustomAllowedDomains(allowed);
   }
 }

@@ -21,6 +21,9 @@ void main() {
     when(() => preferences.retentionDays).thenReturn(30);
     when(() => preferences.dnsRetentionDays).thenReturn(7);
     when(() => preferences.includeSystemApps).thenReturn(false);
+    when(() => preferences.seenTabGuides).thenReturn(const []);
+    when(() => preferences.markTabGuideSeen(any())).thenAnswer((_) async {});
+    when(() => preferences.clearSeenTabGuides()).thenAnswer((_) async {});
     when(
       () => preferences.setOnboardingCompleted(any()),
     ).thenAnswer((_) async {});
@@ -40,6 +43,24 @@ void main() {
     ],
     verify: (_) {
       verify(() => preferences.setOnboardingCompleted(true)).called(1);
+    },
+  );
+
+  blocTest<SettingsCubit, SettingsState>(
+    'replay tips clears seen tabs',
+    build: () => SettingsCubit(preferences),
+    seed: () =>
+        SettingsState.from(preferences).copyWith(seenTabGuides: const ['home']),
+    act: (cubit) => cubit.replayTabGuides(),
+    expect: () => [
+      isA<SettingsState>().having(
+        (state) => state.seenTabGuides,
+        'seen',
+        isEmpty,
+      ),
+    ],
+    verify: (_) {
+      verify(() => preferences.clearSeenTabGuides()).called(1);
     },
   );
 

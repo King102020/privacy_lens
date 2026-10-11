@@ -2,6 +2,28 @@ import 'package:equatable/equatable.dart';
 
 import '../../audit/domain/entities/tracker_sdk.dart';
 
+class ShieldPolicy extends Equatable {
+  const ShieldPolicy({
+    required this.enabledCategories,
+    required this.extraBlocked,
+    required this.allowed,
+    required this.countsByCategory,
+  });
+
+  final Set<TrackerCategory> enabledCategories;
+  final List<String> extraBlocked;
+  final List<String> allowed;
+  final Map<TrackerCategory, int> countsByCategory;
+
+  @override
+  List<Object?> get props => [
+    enabledCategories,
+    extraBlocked,
+    allowed,
+    countsByCategory,
+  ];
+}
+
 class TrackerShieldStatus extends Equatable {
   const TrackerShieldStatus({
     required this.isRunning,

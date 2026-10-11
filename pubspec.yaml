@@ -43,7 +43,8 @@ flutter:
   default-flavor: dev
 
   assets:
-    - assets/rules/
+    - assets/rules/tracker_domains.txt
+    - assets/rules/tracker_sdks.json
 
   fonts:
     - family: Inter

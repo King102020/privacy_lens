@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Non-sensitive app settings. Audit data lives in the encrypted database.
 class AppPreferences {
   AppPreferences(this._preferences);
 
@@ -15,6 +14,21 @@ class AppPreferences {
   static const String _retentionDays = 'retention_days';
   static const String _dnsRetentionDays = 'dns_retention_days';
   static const String _includeSystemApps = 'include_system_apps';
+  static const String _shieldCategories = 'shield_categories';
+  static const String _customBlocked = 'shield_custom_blocked';
+  static const String _customAllowed = 'shield_custom_allowed';
+  static const String _seenTabGuides = 'seen_tab_guides';
+
+  static const List<String> defaultShieldCategories = [
+    'advertising',
+    'analytics',
+    'attribution',
+    'profiling',
+  ];
+
+  static final RegExp hostnamePattern = RegExp(
+    r'^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,24}$',
+  );
 
   final SharedPreferencesWithCache _preferences;
 
@@ -27,10 +41,27 @@ class AppPreferences {
           _retentionDays,
           _dnsRetentionDays,
           _includeSystemApps,
+          _shieldCategories,
+          _customBlocked,
+          _customAllowed,
+          _seenTabGuides,
         },
       ),
     ),
   );
+
+  static String? tryParseHostname(String raw) {
+    var host = raw.trim().toLowerCase();
+    if (host.contains('://') ||
+        host.contains('/') ||
+        host.contains(':') ||
+        host.contains(' ')) {
+      return null;
+    }
+    host = host.replaceAll(RegExp(r'\.$'), '');
+    if (!hostnamePattern.hasMatch(host)) return null;
+    return host;
+  }
 
   bool get onboardingCompleted =>
       _preferences.getBool(_onboardingCompleted) ?? false;
@@ -78,4 +109,39 @@ class AppPreferences {
 
   Future<void> setIncludeSystemApps(bool value) =>
       _preferences.setBool(_includeSystemApps, value);
+
+  List<String> get enabledShieldCategories =>
+      _preferences.getStringList(_shieldCategories) ?? defaultShieldCategories;
+
+  Future<void> setEnabledShieldCategories(Iterable<String> values) {
+    final names = values.toSet().toList()..sort();
+    return _preferences.setStringList(_shieldCategories, names);
+  }
+
+  List<String> get customBlockedDomains =>
+      _preferences.getStringList(_customBlocked) ?? const [];
+
+  Future<void> setCustomBlockedDomains(Iterable<String> values) {
+    final hosts = values.toSet().toList()..sort();
+    return _preferences.setStringList(_customBlocked, hosts);
+  }
+
+  List<String> get customAllowedDomains =>
+      _preferences.getStringList(_customAllowed) ?? const [];
+
+  Future<void> setCustomAllowedDomains(Iterable<String> values) {
+    final hosts = values.toSet().toList()..sort();
+    return _preferences.setStringList(_customAllowed, hosts);
+  }
+
+  List<String> get seenTabGuides =>
+      _preferences.getStringList(_seenTabGuides) ?? const [];
+
+  Future<void> markTabGuideSeen(String tab) {
+    final next = {...seenTabGuides, tab}.toList()..sort();
+    return _preferences.setStringList(_seenTabGuides, next);
+  }
+
+  Future<void> clearSeenTabGuides() =>
+      _preferences.setStringList(_seenTabGuides, const []);
 }

@@ -2,8 +2,6 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/foundation.dart';
 
-/// Central logging interface. Messages must never contain package names,
-/// domains, or other user data: describe the operation, not the subject.
 abstract interface class AppLogger {
   void debug(String message);
 
@@ -12,8 +10,6 @@ abstract interface class AppLogger {
   void error(String message, {Object? error, StackTrace? stackTrace});
 }
 
-/// Writes to the debug console in debug builds and drops everything in
-/// release builds. Privacy Lens has no crash upload by design.
 class ConsoleAppLogger implements AppLogger {
   const ConsoleAppLogger();
 

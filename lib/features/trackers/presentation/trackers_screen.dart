@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,14 +11,14 @@ import '../../../shared/extensions/context_extensions.dart';
 import '../../../shared/presentation/failure_text.dart';
 import '../../../shared/presentation/formatters.dart';
 import '../../../shared/presentation/label_maps.dart';
+import '../../../shared/widgets/about_sheet.dart';
 import '../../../shared/widgets/lens_app_bar.dart';
-import '../../../shared/widgets/local_only_banner.dart';
 import '../../../shared/widgets/page_padding.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/state_views.dart';
 import '../../../shared/widgets/surface_card.dart';
 import '../../../shared/widgets/tonal_badge.dart';
-import '../../audit/domain/entities/tracker_sdk.dart';
+import '../data/tracker_domain_catalog.dart';
 import '../domain/tracker_shield_entities.dart';
 import 'tracker_shield_cubit.dart';
 
@@ -28,30 +30,27 @@ class TrackersScreen extends StatelessWidget {
     return Scaffold(
       appBar: const LensAppBar(),
       body: ConstrainedContent(
-        child: Column(
-          children: [
-            LocalOnlyBanner(sectionLabel: context.l10n.trackersSectionLabel),
-            Expanded(
-              child: BlocConsumer<TrackerShieldCubit, TrackerShieldState>(
-                listenWhen: (previous, current) =>
-                    current is TrackerShieldReady && current.notice != null,
-                listener: (context, state) {
-                  if (state is TrackerShieldReady &&
-                      state.notice == ShieldNotice.consentDenied) {
-                    context.showSnack(context.l10n.shieldConsentDenied);
-                  }
-                },
-                builder: (context, state) => switch (state) {
-                  TrackerShieldLoading() => const LoadingView(),
-                  TrackerShieldFailure(:final failure) => ErrorView(
-                    message: failure.message(context.l10n),
-                    onRetry: () => context.read<TrackerShieldCubit>().refresh(),
-                  ),
-                  TrackerShieldReady() => _Ready(state: state),
-                },
-              ),
+        child: BlocConsumer<TrackerShieldCubit, TrackerShieldState>(
+          listenWhen: (previous, current) =>
+              current is TrackerShieldReady && current.notice != null,
+          listener: (context, state) {
+            if (state is! TrackerShieldReady || state.notice == null) {
+              return;
+            }
+            final message = switch (state.notice!) {
+              ShieldNotice.consentDenied => context.l10n.shieldConsentDenied,
+              ShieldNotice.invalidDomain => context.l10n.shieldInvalidDomain,
+            };
+            context.showSnack(message);
+          },
+          builder: (context, state) => switch (state) {
+            TrackerShieldLoading() => const LoadingView(),
+            TrackerShieldFailure(:final failure) => ErrorView(
+              message: failure.message(context.l10n),
+              onRetry: () => context.read<TrackerShieldCubit>().refresh(),
             ),
-          ],
+            TrackerShieldReady() => _Ready(state: state),
+          },
         ),
       ),
     );
@@ -84,13 +83,17 @@ class _Ready extends StatelessWidget {
                       style: context.textStyles.titleMedium,
                     ),
                   ),
-                  TonalBadge(
-                    label: state.status.isRunning
-                        ? l10n.shieldActive
-                        : l10n.shieldOff,
-                    tone: state.status.isRunning
-                        ? context.severityColors.low
-                        : neutralTone(context),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 220),
+                    child: TonalBadge(
+                      key: ValueKey(state.status.isRunning),
+                      label: state.status.isRunning
+                          ? l10n.shieldActive
+                          : l10n.shieldOff,
+                      tone: state.status.isRunning
+                          ? context.severityColors.low
+                          : neutralTone(context),
+                    ),
                   ),
                   Switch(
                     value: state.status.isRunning,
@@ -102,8 +105,6 @@ class _Ready extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(l10n.shieldDescription),
               const SizedBox(height: AppSpacing.md),
               Row(
                 children: [
@@ -130,6 +131,75 @@ class _Ready extends StatelessWidget {
             ],
           ),
         ),
+        SectionHeader(title: l10n.shieldCategoriesTitle),
+        SurfaceCard(
+          child: Column(
+            children: [
+              for (final category in TrackerDomainCatalog.shieldCategories)
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(category.label(l10n)),
+                  subtitle: Text(
+                    l10n.shieldCategoryCount(
+                      state.policy.countsByCategory[category] ?? 0,
+                    ),
+                  ),
+                  value: state.policy.enabledCategories.contains(category),
+                  onChanged: state.busy
+                      ? null
+                      : (value) => unawaited(
+                          context.read<TrackerShieldCubit>().setCategoryEnabled(
+                            category,
+                            value,
+                          ),
+                        ),
+                ),
+            ],
+          ),
+        ),
+        SectionHeader(title: l10n.shieldCustomRulesTitle),
+        SurfaceCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: state.busy
+                      ? null
+                      : () => unawaited(showAddDomainSheet(context)),
+                  icon: const Icon(Icons.add),
+                  label: Text(l10n.shieldAddDomain),
+                ),
+              ),
+              if (state.policy.extraBlocked.isEmpty &&
+                  state.policy.allowed.isEmpty)
+                Text(l10n.shieldNoCustomRules)
+              else ...[
+                for (final domain in state.policy.extraBlocked)
+                  _CustomRuleRow(
+                    domain: domain,
+                    label: l10n.shieldCustomBlocked,
+                    onRemove: () => unawaited(
+                      context.read<TrackerShieldCubit>().removeCustomDomain(
+                        domain,
+                      ),
+                    ),
+                  ),
+                for (final domain in state.policy.allowed)
+                  _CustomRuleRow(
+                    domain: domain,
+                    label: l10n.shieldCustomAllowed,
+                    onRemove: () => unawaited(
+                      context.read<TrackerShieldCubit>().removeCustomDomain(
+                        domain,
+                      ),
+                    ),
+                  ),
+              ],
+            ],
+          ),
+        ),
         SectionHeader(title: l10n.shieldHourlyTitle),
         SurfaceCard(
           child: activity.blockedTodayByHour.isEmpty
@@ -137,12 +207,42 @@ class _Ready extends StatelessWidget {
               : _HourlyChart(values: activity.blockedTodayByHour),
         ),
         const SizedBox(height: AppSpacing.md),
-        TextField(
-          onChanged: context.read<TrackerShieldCubit>().setQuery,
-          decoration: InputDecoration(
-            hintText: l10n.shieldSearchHint,
-            prefixIcon: const Icon(Icons.search),
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                onChanged: context.read<TrackerShieldCubit>().setQuery,
+                decoration: InputDecoration(
+                  hintText: l10n.shieldSearchHint,
+                  prefixIcon: const Icon(Icons.search),
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            PopupMenuButton<ShieldSort>(
+              tooltip: l10n.shieldSortHits,
+              initialValue: state.sort,
+              onSelected: context.read<TrackerShieldCubit>().setSort,
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: ShieldSort.hits,
+                  child: Text(l10n.shieldSortHits),
+                ),
+                PopupMenuItem(
+                  value: ShieldSort.recent,
+                  child: Text(l10n.shieldSortRecent),
+                ),
+                PopupMenuItem(
+                  value: ShieldSort.name,
+                  child: Text(l10n.shieldSortName),
+                ),
+              ],
+              child: const Padding(
+                padding: EdgeInsets.all(AppSpacing.sm),
+                child: Icon(Icons.sort),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: AppSpacing.sm),
         SizedBox(
@@ -159,7 +259,7 @@ class _Ready extends StatelessWidget {
                       context.read<TrackerShieldCubit>().setCategory(null),
                 ),
               ),
-              for (final category in TrackerCategory.values)
+              for (final category in TrackerDomainCatalog.shieldCategories)
                 Padding(
                   padding: const EdgeInsets.only(right: AppSpacing.sm),
                   child: FilterChip(
@@ -190,12 +290,13 @@ class _Ready extends StatelessWidget {
           style: context.textStyles.titleSmall,
         ),
         Text(l10n.shieldRulesCount(state.status.blocklistSize)),
-        SectionHeader(title: l10n.shieldLimitsTitle),
-        Text(l10n.shieldLimitPrivateDns),
-        const SizedBox(height: AppSpacing.sm),
-        Text(l10n.shieldLimitDoh),
-        const SizedBox(height: AppSpacing.sm),
-        Text(l10n.shieldLimitOtherVpn),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton(
+            onPressed: () => unawaited(showLimitsSheet(context)),
+            child: Text(l10n.shieldLimitsAction),
+          ),
+        ),
       ],
     );
   }
@@ -311,10 +412,131 @@ class _BlockedRow extends StatelessWidget {
                 ),
                 style: context.textStyles.labelSmall,
               ),
+              TextButton(
+                onPressed: () => unawaited(
+                  context.read<TrackerShieldCubit>().allowDomain(item.domain),
+                ),
+                child: Text(l10n.shieldAllowAction),
+              ),
             ],
           ),
         ],
       ),
     );
+  }
+}
+
+class _CustomRuleRow extends StatelessWidget {
+  const _CustomRuleRow({
+    required this.domain,
+    required this.label,
+    required this.onRemove,
+  });
+
+  final String domain;
+  final String label;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(domain),
+      subtitle: Text(label),
+      trailing: IconButton(
+        tooltip: context.l10n.shieldRemoveRule,
+        onPressed: onRemove,
+        icon: const Icon(Icons.close),
+      ),
+    );
+  }
+}
+
+Future<void> showAddDomainSheet(BuildContext context) {
+  final cubit = context.read<TrackerShieldCubit>();
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    builder: (context) => Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: BlocProvider.value(value: cubit, child: const _AddDomainSheet()),
+    ),
+  );
+}
+
+class _AddDomainSheet extends StatefulWidget {
+  const _AddDomainSheet();
+
+  @override
+  State<_AddDomainSheet> createState() => _AddDomainSheetState();
+}
+
+class _AddDomainSheetState extends State<_AddDomainSheet> {
+  final _controller = TextEditingController();
+  var _allow = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.lg,
+        AppSpacing.xl,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.shieldAddDomainTitle,
+            style: context.textStyles.titleMedium,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            keyboardType: TextInputType.url,
+            autocorrect: false,
+            decoration: InputDecoration(hintText: l10n.shieldAddDomainHint),
+            onSubmitted: (_) => _submit(),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          SegmentedButton<bool>(
+            segments: [
+              ButtonSegment(value: false, label: Text(l10n.shieldBlockDomain)),
+              ButtonSegment(value: true, label: Text(l10n.shieldAllowDomain)),
+            ],
+            selected: {_allow},
+            onSelectionChanged: (selected) {
+              setState(() => _allow = selected.single);
+            },
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton(
+              onPressed: _submit,
+              child: Text(l10n.shieldAddDomain),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _submit() {
+    final cubit = context.read<TrackerShieldCubit>();
+    final raw = _controller.text;
+    Navigator.of(context).pop();
+    unawaited(cubit.addCustomDomain(raw, allow: _allow));
   }
 }

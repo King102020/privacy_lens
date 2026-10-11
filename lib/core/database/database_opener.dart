@@ -19,9 +19,6 @@ Future<File> databaseFile() async {
   return File(p.join(directory.path, databaseFileName));
 }
 
-/// Opens the encrypted database. If the file cannot be decrypted (for example
-/// after an interrupted wipe), it is replaced with an empty one rather than
-/// leaving the app unusable.
 Future<AppDatabase> openAppDatabase({
   required DatabaseKeyStore keyStore,
   required AppLogger logger,

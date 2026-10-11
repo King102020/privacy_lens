@@ -739,6 +739,11 @@ interface TrackerShieldHostApi {
   fun stop()
   fun fetchBlockedEvents(afterId: Long, limit: Long): List<DnsEventDto>
   fun deleteBlockedEventsUpTo(id: Long)
+  /**
+   * Updates the running DNS filter. Allow-list wins, then enabled
+   * categories plus extra blocked hosts.
+   */
+  fun applyPolicy(enabledCategories: List<String>, extraBlocked: List<String>, allowed: List<String>)
 
   companion object {
     /** The codec used by TrackerShieldHostApi. */
@@ -824,6 +829,26 @@ interface TrackerShieldHostApi {
             val idArg = args[0] as Long
             val wrapped: List<Any?> = try {
               api.deleteBlockedEventsUpTo(idArg)
+              listOf(null)
+            } catch (exception: Throwable) {
+              DeviceApiPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.privacy_lens.TrackerShieldHostApi.applyPolicy$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val enabledCategoriesArg = args[0] as List<String>
+            val extraBlockedArg = args[1] as List<String>
+            val allowedArg = args[2] as List<String>
+            val wrapped: List<Any?> = try {
+              api.applyPolicy(enabledCategoriesArg, extraBlockedArg, allowedArg)
               listOf(null)
             } catch (exception: Throwable) {
               DeviceApiPigeonUtils.wrapError(exception)

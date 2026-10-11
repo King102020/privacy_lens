@@ -11,6 +11,7 @@ class SettingsState extends Equatable {
     required this.retentionDays,
     required this.dnsRetentionDays,
     required this.includeSystemApps,
+    required this.seenTabGuides,
   });
 
   factory SettingsState.from(AppPreferences preferences) => SettingsState(
@@ -19,6 +20,7 @@ class SettingsState extends Equatable {
     retentionDays: preferences.retentionDays,
     dnsRetentionDays: preferences.dnsRetentionDays,
     includeSystemApps: preferences.includeSystemApps,
+    seenTabGuides: preferences.seenTabGuides,
   );
 
   final bool onboardingCompleted;
@@ -26,6 +28,7 @@ class SettingsState extends Equatable {
   final int retentionDays;
   final int dnsRetentionDays;
   final bool includeSystemApps;
+  final List<String> seenTabGuides;
 
   SettingsState copyWith({
     bool? onboardingCompleted,
@@ -33,12 +36,14 @@ class SettingsState extends Equatable {
     int? retentionDays,
     int? dnsRetentionDays,
     bool? includeSystemApps,
+    List<String>? seenTabGuides,
   }) => SettingsState(
     onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
     themeMode: themeMode ?? this.themeMode,
     retentionDays: retentionDays ?? this.retentionDays,
     dnsRetentionDays: dnsRetentionDays ?? this.dnsRetentionDays,
     includeSystemApps: includeSystemApps ?? this.includeSystemApps,
+    seenTabGuides: seenTabGuides ?? this.seenTabGuides,
   );
 
   @override
@@ -48,6 +53,7 @@ class SettingsState extends Equatable {
     retentionDays,
     dnsRetentionDays,
     includeSystemApps,
+    seenTabGuides,
   ];
 }
 
@@ -79,5 +85,15 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> setIncludeSystemApps(bool value) async {
     await _preferences.setIncludeSystemApps(value);
     emit(state.copyWith(includeSystemApps: value));
+  }
+
+  Future<void> markTabGuideSeen(String tab) async {
+    await _preferences.markTabGuideSeen(tab);
+    emit(state.copyWith(seenTabGuides: _preferences.seenTabGuides));
+  }
+
+  Future<void> replayTabGuides() async {
+    await _preferences.clearSeenTabGuides();
+    emit(state.copyWith(seenTabGuides: const []));
   }
 }

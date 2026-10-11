@@ -9,12 +9,9 @@ abstract final class AppDimensions {
   static const double postureRingStroke = 6;
   static const double usageBarHeight = 8;
   static const double hourlyChartHeight = 96;
-
-  /// Icons are decoded at this size so a long app list stays light on memory.
   static const int appIconCacheSize = 128;
 }
 
-/// Width breakpoints from the "Layout & Spacing" section of DESIGN.md.
 abstract final class AppBreakpoints {
   static const double medium = 600;
   static const double expanded = 840;

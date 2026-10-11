@@ -11,7 +11,6 @@ import '../../../shared/presentation/formatters.dart';
 import '../../../shared/presentation/label_maps.dart';
 import '../../../shared/widgets/app_icon.dart';
 import '../../../shared/widgets/lens_app_bar.dart';
-import '../../../shared/widgets/local_only_banner.dart';
 import '../../../shared/widgets/page_padding.dart';
 import '../../../shared/widgets/permission_chip.dart';
 import '../../../shared/widgets/section_header.dart';
@@ -34,39 +33,31 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: const LensAppBar(),
       body: ConstrainedContent(
-        child: Column(
-          children: [
-            LocalOnlyBanner(sectionLabel: context.l10n.homeSectionLabel),
-            Expanded(
-              child: BlocBuilder<AuditCubit, AuditState>(
-                builder: (context, state) => switch (state) {
-                  AuditLoading() => const LoadingView(),
-                  AuditEmpty() => _EmptyHome(
-                    onScan: () => context.read<AuditCubit>().scan(),
-                  ),
-                  AuditFailure(:final failure, :final previous) =>
-                    previous == null
-                        ? ErrorView(
-                            message: failure.message(context.l10n),
-                            onRetry: () =>
-                                context.read<AuditCubit>().loadLatest(),
-                          )
-                        : _ReadyHome(report: previous, scanning: false),
-                  AuditScanning(:final previous) =>
-                    previous == null
-                        ? LoadingView(
-                            message: state.progress.label(context.l10n),
-                            progress: state.progress.fraction,
-                          )
-                        : _ReadyHome(report: previous, scanning: true),
-                  AuditReady(:final current) => _ReadyHome(
-                    report: current,
-                    scanning: false,
-                  ),
-                },
-              ),
+        child: BlocBuilder<AuditCubit, AuditState>(
+          builder: (context, state) => switch (state) {
+            AuditLoading() => const LoadingView(),
+            AuditEmpty() => _EmptyHome(
+              onScan: () => context.read<AuditCubit>().scan(),
             ),
-          ],
+            AuditFailure(:final failure, :final previous) =>
+              previous == null
+                  ? ErrorView(
+                      message: failure.message(context.l10n),
+                      onRetry: () => context.read<AuditCubit>().loadLatest(),
+                    )
+                  : _ReadyHome(report: previous, scanning: false),
+            AuditScanning(:final previous) =>
+              previous == null
+                  ? LoadingView(
+                      message: state.progress.label(context.l10n),
+                      progress: state.progress.fraction,
+                    )
+                  : _ReadyHome(report: previous, scanning: true),
+            AuditReady(:final current) => _ReadyHome(
+              report: current,
+              scanning: false,
+            ),
+          },
         ),
       ),
     );
@@ -215,21 +206,6 @@ class _ReadyHome extends StatelessWidget {
           ),
         ),
         ..._discoveries(context, report, now),
-        const SizedBox(height: AppSpacing.lg),
-        Row(
-          children: [
-            Icon(Icons.lock_outline, size: 16, color: context.colors.primary),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                l10n.homeLocalFooter,
-                style: context.textStyles.bodySmall?.copyWith(
-                  color: context.colors.onSurfaceVariant,
-                ),
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }

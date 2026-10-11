@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/// Holds the SQLCipher key in Android Keystore-backed storage.
 class DatabaseKeyStore {
   DatabaseKeyStore({FlutterSecureStorage? storage})
     : _storage = storage ?? const FlutterSecureStorage();
@@ -23,7 +22,6 @@ class DatabaseKeyStore {
   Future<void> save(String hexKey) =>
       _storage.write(key: _keyName, value: hexKey);
 
-  /// 256 random bits as hex, the raw-key format SQLCipher accepts.
   String generate() {
     final random = Random.secure();
     final buffer = StringBuffer();

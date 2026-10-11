@@ -40,6 +40,7 @@ Future<void> bootstrap() async {
     dataSource: shield,
     database: database,
     catalog: catalog,
+    preferences: preferences,
     logger: logger,
   );
   final vaultRepository = DataVaultRepositoryImpl(

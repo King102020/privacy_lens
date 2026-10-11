@@ -7,7 +7,6 @@ import 'platform_call.dart';
 
 typedef ScanProgressCallback = void Function(int scanned, int total);
 
-/// Typed access to the Kotlin collectors. Every call returns a [Result].
 class DeviceDataSource {
   DeviceDataSource({required AppLogger logger, DeviceHostApi? api})
     : _logger = logger,

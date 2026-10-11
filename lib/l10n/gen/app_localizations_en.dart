@@ -12,10 +12,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Privacy Lens';
 
   @override
-  String get appTagline => 'Local on-device engine';
+  String get appTagline => 'Stays on this phone';
 
   @override
   String get localOnlyBanner => 'Zero telemetry · 100% on-device';
+
+  @override
+  String get guideGotIt => 'Got it';
+
+  @override
+  String get guideHomeTitle => 'Home';
+
+  @override
+  String get guideHomeBody =>
+      'Run a scan to see permissions and tracker libraries. Nothing leaves this phone.';
+
+  @override
+  String get guideAppsTitle => 'Apps';
+
+  @override
+  String get guideAppsBody =>
+      'Each app’s grants, usage, and known libraries. Open one to review it.';
+
+  @override
+  String get guideFindingsTitle => 'Findings';
+
+  @override
+  String get guideFindingsBody =>
+      'Issues from the latest scan, grouped by how serious they are.';
+
+  @override
+  String get guideTrackersTitle => 'Tracker Shield';
+
+  @override
+  String get guideTrackersBody =>
+      'This switch filters tracker hostnames on the phone. It cannot hide ads already drawn in a page.';
+
+  @override
+  String get guideSettingsTitle => 'Settings';
+
+  @override
+  String get guideSettingsBody =>
+      'Retention, export, and wipe stay on this phone. Replay these tips anytime.';
+
+  @override
+  String get settingsReplayTips => 'Replay tips';
+
+  @override
+  String get settingsReplayTipsBody =>
+      'Show the first-visit guide on each tab again.';
 
   @override
   String get aboutTooltip => 'How Privacy Lens works';
@@ -334,7 +379,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingPage1Body =>
-      'Privacy Lens maps granted permissions, unused apps with sensitive access, and known tracker libraries. The work stays on this phone.';
+      'Permissions, unused apps, and tracker libraries. Stays on this phone.';
 
   @override
   String get onboardingPage1Item1Title => 'Permission inventory';
@@ -358,7 +403,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingPage2Body =>
-      'Android only shares how long an app was on screen after you turn on Usage Access for Privacy Lens. You can skip this and still scan permissions.';
+      'Needed for time on screen. You can skip it and still scan.';
 
   @override
   String get onboardingRestrictedTitle =>
@@ -385,7 +430,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingPage3Body =>
-      'Tracker Shield is a local DNS filter. Android will show a VPN consent screen. No browsing data is sent to us.';
+      'A local DNS filter. Android will ask for VPN consent.';
 
   @override
   String get onboardingStartShield => 'Turn on Tracker Shield';
@@ -415,7 +460,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String homePostureSummary(int apps, int micCamera, int trackers) {
-    return '$apps apps audited. $micCamera have the microphone or camera allowed, and $trackers contain known tracking libraries.';
+    return '$apps apps · $micCamera with mic or camera · $trackers with trackers';
   }
 
   @override
@@ -454,8 +499,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeEmptyTitle => 'Run your first audit';
 
   @override
-  String get homeEmptyBody =>
-      'A scan reads installed apps, granted permissions, and known tracker libraries. Nothing leaves this phone.';
+  String get homeEmptyBody => 'Scan apps on this phone.';
 
   @override
   String get homeUsageAccessRequiredTitle => 'Usage Access is off';
@@ -765,6 +809,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'A local DNS filter on this phone. Android shows it as a VPN because that is the only hook for filtering lookups. No packets of ours leave the device.';
 
   @override
+  String get shieldLimitsAction => 'Limits';
+
+  @override
+  String get shieldSearchHint => 'Search domain, app, or tracker';
+
+  @override
+  String get shieldSortHits => 'Most blocked';
+
+  @override
+  String get shieldSortRecent => 'Newest';
+
+  @override
+  String get shieldSortName => 'A–Z';
+
+  @override
   String get shieldDomainsBlocked => 'Domains blocked';
 
   @override
@@ -778,9 +837,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shieldHourlyTitle => 'Blocked lookups today';
-
-  @override
-  String get shieldSearchHint => 'Search blocked domains or apps';
 
   @override
   String shieldFilterAll(int count) {
@@ -841,6 +897,62 @@ class AppLocalizationsEn extends AppLocalizations {
       'VPN consent was declined. The shield stayed off.';
 
   @override
+  String get shieldCategoriesTitle => 'What to block';
+
+  @override
+  String shieldCategoryCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hosts',
+      one: '1 host',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shieldCustomRulesTitle => 'Your domains';
+
+  @override
+  String get shieldAddDomain => 'Add domain';
+
+  @override
+  String get shieldAddDomainTitle => 'Block or allow a hostname';
+
+  @override
+  String get shieldAddDomainHint => 'ads.example.com';
+
+  @override
+  String get shieldBlockDomain => 'Block';
+
+  @override
+  String get shieldAllowDomain => 'Allow';
+
+  @override
+  String get shieldAllowAction => 'Allow';
+
+  @override
+  String get shieldRemoveRule => 'Remove';
+
+  @override
+  String get shieldCustomBlocked => 'Blocked';
+
+  @override
+  String get shieldCustomAllowed => 'Allowed';
+
+  @override
+  String get shieldNoCustomRules =>
+      'No custom domains yet. Add one to block or allow it on this phone.';
+
+  @override
+  String get shieldInvalidDomain =>
+      'Enter a hostname such as ads.example.com, not a URL.';
+
+  @override
+  String get shieldLimitInPage =>
+      'This cannot hide ads drawn inside a page the way a browser can. It only refuses DNS lookups for listed hostnames.';
+
+  @override
   String get settingsSectionLabel => 'Privacy settings';
 
   @override
@@ -862,7 +974,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsRetentionBody =>
-      'Scans and usage older than this window are deleted automatically. The latest scan is kept.';
+      'Older scans are deleted. Latest is kept.';
 
   @override
   String settingsRetentionDays(int count) {
@@ -873,8 +985,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDnsRetentionTitle => 'Tracker log auto-cleanup';
 
   @override
-  String get settingsDnsRetentionBody =>
-      'Blocked DNS rows older than this window are deleted.';
+  String get settingsDnsRetentionBody => 'Older blocked lookups are deleted.';
 
   @override
   String get settingsDnsDaily => '1 day';
@@ -887,14 +998,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsIncludeSystemBody =>
-      'Adds preinstalled packages to the next scan. Most people can leave this off.';
+      'Add preinstalled apps to the next scan.';
 
   @override
   String get settingsExportTitle => 'Export audit report';
 
   @override
-  String get settingsExportBody =>
-      'Writes a file you choose. The file never leaves the phone unless you share it.';
+  String get settingsExportBody => 'Save a file on this phone.';
 
   @override
   String get settingsExportJson => 'Export JSON';
@@ -935,8 +1045,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsInternetTitle => 'INTERNET is used only for DNS';
 
   @override
-  String get settingsInternetBody =>
-      'The INTERNET permission exists so Tracker Shield can forward allowed DNS lookups to your network. Privacy Lens never opens its own connections.';
+  String get settingsInternetBody => 'Only used to forward allowed DNS.';
 
   @override
   String get settingsHowItWorks => 'How Privacy Lens works';

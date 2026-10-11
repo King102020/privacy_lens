@@ -1,4 +1,5 @@
 import '../../../core/errors/result.dart';
+import '../../audit/domain/entities/tracker_sdk.dart';
 import 'tracker_shield_entities.dart';
 
 abstract interface class TrackerShieldRepository {
@@ -14,4 +15,20 @@ abstract interface class TrackerShieldRepository {
   Future<Result<int>> importBlockedEvents();
 
   Future<Result<ShieldActivity>> loadActivity();
+
+  ShieldPolicy currentPolicy();
+
+  Future<Result<void>> applyPolicy();
+
+  Future<Result<void>> setCategoryEnabled(
+    TrackerCategory category,
+    bool enabled,
+  );
+
+  /// Returns false when [raw] is not a hostname.
+  Future<Result<bool>> addCustomDomain(String raw, {required bool allow});
+
+  Future<Result<void>> removeCustomDomain(String domain);
+
+  Future<Result<void>> allowDomain(String domain);
 }

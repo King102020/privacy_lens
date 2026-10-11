@@ -3,6 +3,14 @@ import 'package:flutter/material.dart';
 import '../../core/design_system/app_spacing.dart';
 import '../extensions/context_extensions.dart';
 
+Future<void> showLimitsSheet(BuildContext context) =>
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => const _LimitsSheet(),
+    );
+
 Future<void> showAboutSheet(BuildContext context) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
@@ -61,6 +69,42 @@ class _AboutSheet extends StatelessWidget {
               title: Text(title),
               subtitle: Text(body),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LimitsSheet extends StatelessWidget {
+  const _LimitsSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final items = [
+      l10n.shieldLimitPrivateDns,
+      l10n.shieldLimitDoh,
+      l10n.shieldLimitOtherVpn,
+      l10n.shieldLimitInPage,
+      l10n.aboutLimitsBody,
+    ];
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        0,
+        AppSpacing.lg,
+        AppSpacing.xl,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.shieldLimitsTitle, style: context.textStyles.titleMedium),
+          const SizedBox(height: AppSpacing.md),
+          for (final item in items) ...[
+            Text(item),
+            const SizedBox(height: AppSpacing.sm),
+          ],
         ],
       ),
     );

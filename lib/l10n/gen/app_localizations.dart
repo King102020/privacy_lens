@@ -103,7 +103,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTagline.
   ///
   /// In en, this message translates to:
-  /// **'Local on-device engine'**
+  /// **'Stays on this phone'**
   String get appTagline;
 
   /// No description provided for @localOnlyBanner.
@@ -111,6 +111,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Zero telemetry · 100% on-device'**
   String get localOnlyBanner;
+
+  /// No description provided for @guideGotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get guideGotIt;
+
+  /// No description provided for @guideHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get guideHomeTitle;
+
+  /// No description provided for @guideHomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Run a scan to see permissions and tracker libraries. Nothing leaves this phone.'**
+  String get guideHomeBody;
+
+  /// No description provided for @guideAppsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps'**
+  String get guideAppsTitle;
+
+  /// No description provided for @guideAppsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Each app’s grants, usage, and known libraries. Open one to review it.'**
+  String get guideAppsBody;
+
+  /// No description provided for @guideFindingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Findings'**
+  String get guideFindingsTitle;
+
+  /// No description provided for @guideFindingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Issues from the latest scan, grouped by how serious they are.'**
+  String get guideFindingsBody;
+
+  /// No description provided for @guideTrackersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker Shield'**
+  String get guideTrackersTitle;
+
+  /// No description provided for @guideTrackersBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This switch filters tracker hostnames on the phone. It cannot hide ads already drawn in a page.'**
+  String get guideTrackersBody;
+
+  /// No description provided for @guideSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get guideSettingsTitle;
+
+  /// No description provided for @guideSettingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Retention, export, and wipe stay on this phone. Replay these tips anytime.'**
+  String get guideSettingsBody;
+
+  /// No description provided for @settingsReplayTips.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay tips'**
+  String get settingsReplayTips;
+
+  /// No description provided for @settingsReplayTipsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the first-visit guide on each tab again.'**
+  String get settingsReplayTipsBody;
 
   /// No description provided for @aboutTooltip.
   ///
@@ -697,7 +775,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingPage1Body.
   ///
   /// In en, this message translates to:
-  /// **'Privacy Lens maps granted permissions, unused apps with sensitive access, and known tracker libraries. The work stays on this phone.'**
+  /// **'Permissions, unused apps, and tracker libraries. Stays on this phone.'**
   String get onboardingPage1Body;
 
   /// No description provided for @onboardingPage1Item1Title.
@@ -739,7 +817,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingPage2Body.
   ///
   /// In en, this message translates to:
-  /// **'Android only shares how long an app was on screen after you turn on Usage Access for Privacy Lens. You can skip this and still scan permissions.'**
+  /// **'Needed for time on screen. You can skip it and still scan.'**
   String get onboardingPage2Body;
 
   /// No description provided for @onboardingRestrictedTitle.
@@ -787,7 +865,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingPage3Body.
   ///
   /// In en, this message translates to:
-  /// **'Tracker Shield is a local DNS filter. Android will show a VPN consent screen. No browsing data is sent to us.'**
+  /// **'A local DNS filter. Android will ask for VPN consent.'**
   String get onboardingPage3Body;
 
   /// No description provided for @onboardingStartShield.
@@ -829,7 +907,7 @@ abstract class AppLocalizations {
   /// No description provided for @homePostureSummary.
   ///
   /// In en, this message translates to:
-  /// **'{apps} apps audited. {micCamera} have the microphone or camera allowed, and {trackers} contain known tracking libraries.'**
+  /// **'{apps} apps · {micCamera} with mic or camera · {trackers} with trackers'**
   String homePostureSummary(int apps, int micCamera, int trackers);
 
   /// No description provided for @homeRunAudit.
@@ -901,7 +979,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'A scan reads installed apps, granted permissions, and known tracker libraries. Nothing leaves this phone.'**
+  /// **'Scan apps on this phone.'**
   String get homeEmptyBody;
 
   /// No description provided for @homeUsageAccessRequiredTitle.
@@ -1300,6 +1378,36 @@ abstract class AppLocalizations {
   /// **'A local DNS filter on this phone. Android shows it as a VPN because that is the only hook for filtering lookups. No packets of ours leave the device.'**
   String get shieldDescription;
 
+  /// No description provided for @shieldLimitsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits'**
+  String get shieldLimitsAction;
+
+  /// No description provided for @shieldSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search domain, app, or tracker'**
+  String get shieldSearchHint;
+
+  /// No description provided for @shieldSortHits.
+  ///
+  /// In en, this message translates to:
+  /// **'Most blocked'**
+  String get shieldSortHits;
+
+  /// No description provided for @shieldSortRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get shieldSortRecent;
+
+  /// No description provided for @shieldSortName.
+  ///
+  /// In en, this message translates to:
+  /// **'A–Z'**
+  String get shieldSortName;
+
   /// No description provided for @shieldDomainsBlocked.
   ///
   /// In en, this message translates to:
@@ -1329,12 +1437,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Blocked lookups today'**
   String get shieldHourlyTitle;
-
-  /// No description provided for @shieldSearchHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Search blocked domains or apps'**
-  String get shieldSearchHint;
 
   /// No description provided for @shieldFilterAll.
   ///
@@ -1414,6 +1516,96 @@ abstract class AppLocalizations {
   /// **'VPN consent was declined. The shield stayed off.'**
   String get shieldConsentDenied;
 
+  /// No description provided for @shieldCategoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What to block'**
+  String get shieldCategoriesTitle;
+
+  /// No description provided for @shieldCategoryCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 host} other{{count} hosts}}'**
+  String shieldCategoryCount(int count);
+
+  /// No description provided for @shieldCustomRulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your domains'**
+  String get shieldCustomRulesTitle;
+
+  /// No description provided for @shieldAddDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Add domain'**
+  String get shieldAddDomain;
+
+  /// No description provided for @shieldAddDomainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Block or allow a hostname'**
+  String get shieldAddDomainTitle;
+
+  /// No description provided for @shieldAddDomainHint.
+  ///
+  /// In en, this message translates to:
+  /// **'ads.example.com'**
+  String get shieldAddDomainHint;
+
+  /// No description provided for @shieldBlockDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get shieldBlockDomain;
+
+  /// No description provided for @shieldAllowDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get shieldAllowDomain;
+
+  /// No description provided for @shieldAllowAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get shieldAllowAction;
+
+  /// No description provided for @shieldRemoveRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get shieldRemoveRule;
+
+  /// No description provided for @shieldCustomBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get shieldCustomBlocked;
+
+  /// No description provided for @shieldCustomAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed'**
+  String get shieldCustomAllowed;
+
+  /// No description provided for @shieldNoCustomRules.
+  ///
+  /// In en, this message translates to:
+  /// **'No custom domains yet. Add one to block or allow it on this phone.'**
+  String get shieldNoCustomRules;
+
+  /// No description provided for @shieldInvalidDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a hostname such as ads.example.com, not a URL.'**
+  String get shieldInvalidDomain;
+
+  /// No description provided for @shieldLimitInPage.
+  ///
+  /// In en, this message translates to:
+  /// **'This cannot hide ads drawn inside a page the way a browser can. It only refuses DNS lookups for listed hostnames.'**
+  String get shieldLimitInPage;
+
   /// No description provided for @settingsSectionLabel.
   ///
   /// In en, this message translates to:
@@ -1453,7 +1645,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsRetentionBody.
   ///
   /// In en, this message translates to:
-  /// **'Scans and usage older than this window are deleted automatically. The latest scan is kept.'**
+  /// **'Older scans are deleted. Latest is kept.'**
   String get settingsRetentionBody;
 
   /// No description provided for @settingsRetentionDays.
@@ -1471,7 +1663,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDnsRetentionBody.
   ///
   /// In en, this message translates to:
-  /// **'Blocked DNS rows older than this window are deleted.'**
+  /// **'Older blocked lookups are deleted.'**
   String get settingsDnsRetentionBody;
 
   /// No description provided for @settingsDnsDaily.
@@ -1495,7 +1687,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsIncludeSystemBody.
   ///
   /// In en, this message translates to:
-  /// **'Adds preinstalled packages to the next scan. Most people can leave this off.'**
+  /// **'Add preinstalled apps to the next scan.'**
   String get settingsIncludeSystemBody;
 
   /// No description provided for @settingsExportTitle.
@@ -1507,7 +1699,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsExportBody.
   ///
   /// In en, this message translates to:
-  /// **'Writes a file you choose. The file never leaves the phone unless you share it.'**
+  /// **'Save a file on this phone.'**
   String get settingsExportBody;
 
   /// No description provided for @settingsExportJson.
@@ -1585,7 +1777,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsInternetBody.
   ///
   /// In en, this message translates to:
-  /// **'The INTERNET permission exists so Tracker Shield can forward allowed DNS lookups to your network. Privacy Lens never opens its own connections.'**
+  /// **'Only used to forward allowed DNS.'**
   String get settingsInternetBody;
 
   /// No description provided for @settingsHowItWorks.

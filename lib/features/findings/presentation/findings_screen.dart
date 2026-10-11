@@ -11,7 +11,6 @@ import '../../../shared/presentation/failure_text.dart';
 import '../../../shared/presentation/label_maps.dart';
 import '../../../shared/widgets/app_icon.dart';
 import '../../../shared/widgets/lens_app_bar.dart';
-import '../../../shared/widgets/local_only_banner.dart';
 import '../../../shared/widgets/page_padding.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/severity_badge.dart';
@@ -44,36 +43,29 @@ class _FindingsView extends StatelessWidget {
     return Scaffold(
       appBar: const LensAppBar(),
       body: ConstrainedContent(
-        child: Column(
-          children: [
-            LocalOnlyBanner(sectionLabel: context.l10n.findingsSectionLabel),
-            Expanded(
-              child: BlocBuilder<AuditCubit, AuditState>(
-                builder: (context, audit) {
-                  final report = audit.report;
-                  if (report == null) {
-                    if (audit is AuditFailure) {
-                      return ErrorView(
-                        message: audit.failure.message(context.l10n),
-                        onRetry: () => context.read<AuditCubit>().loadLatest(),
-                      );
-                    }
-                    if (audit is AuditLoading || audit is AuditScanning) {
-                      return const LoadingView();
-                    }
-                    return MessageView(
-                      icon: Icons.verified_outlined,
-                      title: context.l10n.findingsEmptyTitle,
-                      message: context.l10n.findingsEmptyBody,
-                      actionLabel: context.l10n.homeRunAudit,
-                      onAction: () => context.read<AuditCubit>().scan(),
-                    );
-                  }
-                  return _FindingsList(report: report);
-                },
-              ),
-            ),
-          ],
+        child: BlocBuilder<AuditCubit, AuditState>(
+          builder: (context, audit) {
+            final report = audit.report;
+            if (report == null) {
+              if (audit is AuditFailure) {
+                return ErrorView(
+                  message: audit.failure.message(context.l10n),
+                  onRetry: () => context.read<AuditCubit>().loadLatest(),
+                );
+              }
+              if (audit is AuditLoading || audit is AuditScanning) {
+                return const LoadingView();
+              }
+              return MessageView(
+                icon: Icons.verified_outlined,
+                title: context.l10n.findingsEmptyTitle,
+                message: context.l10n.findingsEmptyBody,
+                actionLabel: context.l10n.homeRunAudit,
+                onAction: () => context.read<AuditCubit>().scan(),
+              );
+            }
+            return _FindingsList(report: report);
+          },
         ),
       ),
     );

@@ -181,4 +181,12 @@ abstract class TrackerShieldHostApi {
   List<DnsEventDto> fetchBlockedEvents(int afterId, int limit);
 
   void deleteBlockedEventsUpTo(int id);
+
+  /// Updates the running DNS filter. Allow-list wins, then enabled
+  /// categories plus extra blocked hosts.
+  void applyPolicy(
+    List<String> enabledCategories,
+    List<String> extraBlocked,
+    List<String> allowed,
+  );
 }

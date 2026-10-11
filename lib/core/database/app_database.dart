@@ -31,8 +31,6 @@ class AppDatabase extends _$AppDatabase {
     },
   );
 
-  /// Removes every row, re-encrypts the file under [newHexKey], and compacts
-  /// it so deleted pages do not linger on disk.
   Future<void> wipeAndRekey(String newHexKey) async {
     await transaction(() async {
       for (final table in allTables.toList().reversed) {

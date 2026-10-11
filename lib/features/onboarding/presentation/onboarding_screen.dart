@@ -132,37 +132,27 @@ class _IntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return ListView(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
-      children: [
-        const _HeroIcon(icon: Icons.auto_graph),
-        const SizedBox(height: AppSpacing.lg),
-        _Eyebrow(l10n.onboardingPage1Eyebrow),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          l10n.onboardingPage1Title,
-          style: context.textStyles.headlineLarge,
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          l10n.onboardingPage1Body,
-          style: context.textStyles.bodyLarge?.copyWith(
-            color: context.colors.onSurfaceVariant,
+    return _FadeSlide(
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+        children: [
+          const _HeroIcon(icon: Icons.auto_graph),
+          const SizedBox(height: AppSpacing.lg),
+          _Eyebrow(l10n.onboardingPage1Eyebrow),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            l10n.onboardingPage1Title,
+            style: context.textStyles.headlineLarge,
           ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        _Bullet(
-          icon: Icons.apps_outlined,
-          title: l10n.onboardingPage1Item1Title,
-          body: l10n.onboardingPage1Item1Body,
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _Bullet(
-          icon: Icons.hub_outlined,
-          title: l10n.onboardingPage1Item2Title,
-          body: l10n.onboardingPage1Item2Body,
-        ),
-      ],
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            l10n.onboardingPage1Body,
+            style: context.textStyles.bodyLarge?.copyWith(
+              color: context.colors.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -173,65 +163,67 @@ class _UsagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return ListView(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
-      children: [
-        const _HeroIcon(icon: Icons.schedule_outlined),
-        const SizedBox(height: AppSpacing.lg),
-        _Eyebrow(l10n.onboardingPage2Eyebrow),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          l10n.onboardingPage2Title,
-          style: context.textStyles.headlineLarge,
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          l10n.onboardingPage2Body,
-          style: context.textStyles.bodyLarge?.copyWith(
-            color: context.colors.onSurfaceVariant,
+    return _FadeSlide(
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+        children: [
+          const _HeroIcon(icon: Icons.schedule_outlined),
+          const SizedBox(height: AppSpacing.lg),
+          _Eyebrow(l10n.onboardingPage2Eyebrow),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            l10n.onboardingPage2Title,
+            style: context.textStyles.headlineLarge,
           ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        BlocBuilder<AccessCubit, AccessState>(
-          builder: (context, state) {
-            final ready = state is AccessReady ? state.status : null;
-            final granted = ready?.hasUsageAccess ?? false;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (ready?.isRestrictedSettingsLikely ?? false) ...[
-                  SurfaceCard(
-                    color: context.colors.secondaryContainer,
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            l10n.onboardingPage2Body,
+            style: context.textStyles.bodyLarge?.copyWith(
+              color: context.colors.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          BlocBuilder<AccessCubit, AccessState>(
+            builder: (context, state) {
+              final ready = state is AccessReady ? state.status : null;
+              final granted = ready?.hasUsageAccess ?? false;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (ready?.isRestrictedSettingsLikely ?? false) ...[
+                    SurfaceCard(
+                      color: context.colors.secondaryContainer,
+                      child: Text(
+                        l10n.onboardingRestrictedBody,
+                        style: context.textStyles.bodyMedium,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    OutlinedButton(
+                      onPressed: () =>
+                          context.read<AccessCubit>().openOwnAppDetails(),
+                      child: Text(l10n.onboardingOpenAppInfo),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                  ],
+                  FilledButton.tonal(
+                    onPressed: granted
+                        ? null
+                        : () => context
+                              .read<AccessCubit>()
+                              .openUsageAccessSettings(),
                     child: Text(
-                      l10n.onboardingRestrictedBody,
-                      style: context.textStyles.bodyMedium,
+                      granted
+                          ? l10n.onboardingUsageGranted
+                          : l10n.onboardingGrantUsage,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
-                  OutlinedButton(
-                    onPressed: () =>
-                        context.read<AccessCubit>().openOwnAppDetails(),
-                    child: Text(l10n.onboardingOpenAppInfo),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
                 ],
-                FilledButton.tonal(
-                  onPressed: granted
-                      ? null
-                      : () => context
-                            .read<AccessCubit>()
-                            .openUsageAccessSettings(),
-                  child: Text(
-                    granted
-                        ? l10n.onboardingUsageGranted
-                        : l10n.onboardingGrantUsage,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ],
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -242,38 +234,40 @@ class _ShieldPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return ListView(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
-      children: [
-        const _HeroIcon(icon: Icons.shield_outlined),
-        const SizedBox(height: AppSpacing.lg),
-        _Eyebrow(l10n.onboardingPage3Eyebrow),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          l10n.onboardingPage3Title,
-          style: context.textStyles.headlineLarge,
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          l10n.onboardingPage3Body,
-          style: context.textStyles.bodyLarge?.copyWith(
-            color: context.colors.onSurfaceVariant,
+    return _FadeSlide(
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+        children: [
+          const _HeroIcon(icon: Icons.shield_outlined),
+          const SizedBox(height: AppSpacing.lg),
+          _Eyebrow(l10n.onboardingPage3Eyebrow),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            l10n.onboardingPage3Title,
+            style: context.textStyles.headlineLarge,
           ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        FilledButton.tonal(
-          onPressed: () => context.read<TrackerShieldCubit>().start(),
-          child: Text(l10n.onboardingStartShield),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          l10n.onboardingSkipShield,
-          textAlign: TextAlign.center,
-          style: context.textStyles.bodySmall?.copyWith(
-            color: context.colors.onSurfaceVariant,
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            l10n.onboardingPage3Body,
+            style: context.textStyles.bodyLarge?.copyWith(
+              color: context.colors.onSurfaceVariant,
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: AppSpacing.lg),
+          FilledButton.tonal(
+            onPressed: () => context.read<TrackerShieldCubit>().start(),
+            child: Text(l10n.onboardingStartShield),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            l10n.onboardingSkipShield,
+            textAlign: TextAlign.center,
+            style: context.textStyles.bodySmall?.copyWith(
+              color: context.colors.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -286,14 +280,21 @@ class _HeroIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: context.colors.secondaryContainer,
-          shape: BoxShape.circle,
-        ),
-        child: SizedBox.square(
-          dimension: 120,
-          child: Icon(icon, size: 48, color: context.colors.primary),
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.84, end: 1),
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.easeOutBack,
+        builder: (context, scale, child) =>
+            Transform.scale(scale: scale, child: child),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: context.colors.secondaryContainer,
+            shape: BoxShape.circle,
+          ),
+          child: SizedBox.square(
+            dimension: 120,
+            child: Icon(icon, size: 48, color: context.colors.primary),
+          ),
         ),
       ),
     );
@@ -331,36 +332,25 @@ class _Eyebrow extends StatelessWidget {
   }
 }
 
-class _Bullet extends StatelessWidget {
-  const _Bullet({required this.icon, required this.title, required this.body});
+class _FadeSlide extends StatelessWidget {
+  const _FadeSlide({required this.child});
 
-  final IconData icon;
-  final String title;
-  final String body;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return SurfaceCard(
-      child: Row(
-        children: [
-          Icon(icon, color: context.colors.primary),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: context.textStyles.titleSmall),
-                Text(
-                  body,
-                  style: context.textStyles.bodySmall?.copyWith(
-                    color: context.colors.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 420),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) => Opacity(
+        opacity: value,
+        child: Transform.translate(
+          offset: Offset(0, 16 * (1 - value)),
+          child: child,
+        ),
       ),
+      child: child,
     );
   }
 }

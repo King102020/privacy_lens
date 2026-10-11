@@ -10,8 +10,25 @@ class TrackerDomainCatalog {
   static const String assetPath = 'assets/rules/tracker_domains.txt';
   static const String _versionPrefix = '# version:';
 
+  static const List<TrackerCategory> shieldCategories = [
+    TrackerCategory.advertising,
+    TrackerCategory.analytics,
+    TrackerCategory.attribution,
+    TrackerCategory.profiling,
+  ];
+
   final String version;
   final Map<String, TrackerCategory> _categories;
+
+  int get size => _categories.length;
+
+  Map<TrackerCategory, int> get countsByCategory {
+    final counts = {for (final category in shieldCategories) category: 0};
+    for (final category in _categories.values) {
+      counts[category] = (counts[category] ?? 0) + 1;
+    }
+    return counts;
+  }
 
   static Future<TrackerDomainCatalog> load({AssetBundle? bundle}) async =>
       parse(await (bundle ?? rootBundle).loadString(assetPath));

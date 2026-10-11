@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Inter type scale from DESIGN.md. Line heights are expressed as
-/// `lineHeight / fontSize` because Flutter's `height` is a multiplier.
 abstract final class AppTypography {
   static const String fontFamily = 'Inter';
 
@@ -39,7 +37,6 @@ abstract final class AppTypography {
     );
   }
 
-  /// Timestamps and counts use tabular figures so columns stay aligned.
   static TextStyle? tabular(TextStyle? style) =>
       style?.copyWith(fontFeatures: const [FontFeature.tabularFigures()]);
 }

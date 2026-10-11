@@ -36,4 +36,14 @@ class TrackerShieldDataSource {
     'Delete imported events',
     () => _api.deleteBlockedEventsUpTo(id),
   );
+
+  Future<Result<void>> applyPolicy({
+    required List<String> enabledCategories,
+    required List<String> extraBlocked,
+    required List<String> allowed,
+  }) => guardPlatformCall(
+    _logger,
+    'Apply shield policy',
+    () => _api.applyPolicy(enabledCategories, extraBlocked, allowed),
+  );
 }
