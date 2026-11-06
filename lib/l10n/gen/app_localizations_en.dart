@@ -372,6 +372,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get findingWhy => 'Why this matters';
 
   @override
+  String get onboardingBeatApps => 'Your apps hide ad and tracking code';
+
+  @override
+  String get onboardingBeatSensors => 'It sends your activity to ad companies';
+
+  @override
+  String get onboardingBeatTime => 'They build a profile to target you';
+
+  @override
+  String get onboardingBeatShield => 'See it, block it, take back permissions';
+
+  @override
   String get onboardingPage1Eyebrow => 'On-device audit';
 
   @override
