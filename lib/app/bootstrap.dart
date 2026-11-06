@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:rive/rive.dart' show RiveNative;
 
 import '../core/database/database_key_store.dart';
 import '../core/database/database_opener.dart';
@@ -20,6 +21,7 @@ import 'router.dart';
 
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await RiveNative.init();
   const logger = ConsoleAppLogger();
   final preferences = await AppPreferences.create();
   final keyStore = DatabaseKeyStore();

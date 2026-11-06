@@ -760,6 +760,30 @@ abstract class AppLocalizations {
   /// **'Why this matters'**
   String get findingWhy;
 
+  /// No description provided for @onboardingBeatApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Your apps hide ad and tracking code'**
+  String get onboardingBeatApps;
+
+  /// No description provided for @onboardingBeatSensors.
+  ///
+  /// In en, this message translates to:
+  /// **'It sends your activity to ad companies'**
+  String get onboardingBeatSensors;
+
+  /// No description provided for @onboardingBeatTime.
+  ///
+  /// In en, this message translates to:
+  /// **'They build a profile to target you'**
+  String get onboardingBeatTime;
+
+  /// No description provided for @onboardingBeatShield.
+  ///
+  /// In en, this message translates to:
+  /// **'See it, block it, take back permissions'**
+  String get onboardingBeatShield;
+
   /// No description provided for @onboardingPage1Eyebrow.
   ///
   /// In en, this message translates to:

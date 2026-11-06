@@ -94,9 +94,9 @@ void main() {
     }
 
     await tester.pumpWidget(app(const OnboardingScreen()));
-    await tester.pumpAndSettle();
+    await tester.pump();
     await tester.tap(find.text('Skip intro'));
-    await tester.pumpAndSettle();
+    await tester.pump();
     expect(settings.state.onboardingCompleted, isTrue);
 
     final auditCubit = AuditCubit(audit);
