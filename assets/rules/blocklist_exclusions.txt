@@ -1,0 +1,61 @@
+# Hosts that must never appear on the shipped blocklist. A candidate is
+# dropped when it is this name, a parent of it, or a child of it. Sibling
+# hosts stay eligible, so accounts.google.com does not drop
+# adservice.google.com.
+
+# Sign-in
+accounts.google.com
+appleid.apple.com
+login.microsoftonline.com
+login.live.com
+account.microsoft.com
+idmsa.apple.com
+
+# Social and messaging APIs used as deep links
+graph.facebook.com
+graph.instagram.com
+api.whatsapp.com
+api.twitter.com
+api.x.com
+
+# First-party stores, sites, and media
+www.google.com
+www.facebook.com
+web.facebook.com
+connect.facebook.net
+clients2.google.com
+play.google.com
+itunes.apple.com
+youtube.com
+youtu.be
+ggpht.com
+ytimg.com
+
+# Broad CDNs and shared APIs — blocking these breaks ordinary sites
+googleapis.com
+gstatic.com
+googleusercontent.com
+gvt1.com
+gvt2.com
+fbcdn.net
+mzstatic.com
+icloud.com
+windows.net
+office.com
+office365.com
+amazonaws.com
+cloudfront.net
+cloudflare.com
+akamaihd.net
+akamaized.net
+akamaiedge.net
+fastly.net
+fastlylb.net
+
+# Captcha, reference, and connectivity checks
+recaptcha.net
+hcaptcha.com
+mozilla.org
+wikipedia.org
+github.com
+githubusercontent.com
