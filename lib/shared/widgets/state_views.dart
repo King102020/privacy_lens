@@ -51,6 +51,7 @@ class MessageView extends StatelessWidget {
     this.actionLabel,
     this.onAction,
     this.secondary,
+    this.actionKey,
   });
 
   final IconData icon;
@@ -59,6 +60,9 @@ class MessageView extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
   final Widget? secondary;
+
+  /// Lets a spotlight tour point at the action button.
+  final Key? actionKey;
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +109,7 @@ class MessageView extends StatelessWidget {
               if (label != null && onAction != null) ...[
                 const SizedBox(height: AppSpacing.lg),
                 FilledButton(
+                  key: actionKey,
                   onPressed: onAction,
                   style: FilledButton.styleFrom(
                     minimumSize: const Size(

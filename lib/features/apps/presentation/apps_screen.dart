@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/design_system/app_dimensions.dart';
 import '../../../core/design_system/app_spacing.dart';
 import '../../../shared/extensions/context_extensions.dart';
+import '../../../shared/guide/spotlight_tour.dart';
+import '../../../shared/guide/tab_guide.dart';
 import '../../../shared/presentation/failure_text.dart';
 import '../../../shared/presentation/label_maps.dart';
 import '../../../shared/widgets/app_icon.dart';
@@ -18,6 +20,9 @@ import '../../audit/domain/entities/audit_report.dart';
 import '../../audit/presentation/audit_cubit.dart';
 import 'app_detail_screen.dart';
 import 'apps_filter_cubit.dart';
+
+final _searchKey = GlobalKey(debugLabel: 'tour.apps.search');
+final _rowKey = GlobalKey(debugLabel: 'tour.apps.row');
 
 class AppsScreen extends StatelessWidget {
   const AppsScreen({super.key, this.selectedPackage});
@@ -108,94 +113,126 @@ class _AppsList extends StatelessWidget {
     return BlocBuilder<AppsFilterCubit, AppsFilterState>(
       builder: (context, filter) {
         final visible = filter.apply(report.apps);
-        return Column(
-          children: [
-            Padding(
-              padding: pageInsets(context).copyWith(bottom: AppSpacing.sm),
-              child: TextField(
-                onChanged: context.read<AppsFilterCubit>().setQuery,
-                decoration: InputDecoration(
-                  hintText: l10n.appsSearchHint,
-                  prefixIcon: const Icon(Icons.search),
-                ),
-              ),
+        return TabTour(
+          id: TabGuideIds.apps,
+          ready: visible.isNotEmpty,
+          steps: (context) => [
+            TourStep(
+              target: _searchKey,
+              title: l10n.guideAppsSearchTitle,
+              body: l10n.guideAppsSearchBody,
             ),
-            SizedBox(
-              height: AppDimensions.filterChipHeight + AppSpacing.sm,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(
-                  horizontal: pageInsets(context).left,
-                ),
-                children: [
-                  for (final option in AppsFilter.values)
-                    Padding(
-                      padding: const EdgeInsets.only(right: AppSpacing.sm),
-                      child: FilterChip(
-                        selected: filter.filter == option,
-                        label: Text(switch (option) {
-                          AppsFilter.all => l10n.appsFilterAll(
-                            filter.count(report.apps, option),
-                          ),
-                          AppsFilter.highRisk => l10n.appsFilterHighRisk(
-                            filter.count(report.apps, option),
-                          ),
-                          AppsFilter.camera => l10n.appsFilterCamera(
-                            filter.count(report.apps, option),
-                          ),
-                          AppsFilter.microphone => l10n.appsFilterMicrophone(
-                            filter.count(report.apps, option),
-                          ),
-                        }),
-                        onSelected: (_) =>
-                            context.read<AppsFilterCubit>().setFilter(option),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: visible.isEmpty
-                  ? MessageView(
-                      icon: Icons.search_off,
-                      title: l10n.appsNoMatchTitle,
-                      message: l10n.appsNoMatchBody,
-                    )
-                  : ListView.builder(
-                      padding: pageInsets(context),
-                      itemCount: visible.length,
-                      itemBuilder: (context, index) {
-                        final audit = visible[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                          child: _AppRow(
-                            audit: audit,
-                            selected: audit.app.packageName == selectedPackage,
-                            onTap: () =>
-                                context.go('/apps/${audit.app.packageName}'),
-                          ),
-                        );
-                      },
-                    ),
-            ),
-            Padding(
-              padding: pageInsets(context),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.appsMonitored(report.apps.length),
-                      style: context.textStyles.bodySmall,
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    onPressed: () => context.read<AuditCubit>().scan(),
-                    child: Text(l10n.appsRescan),
-                  ),
-                ],
-              ),
+            TourStep(
+              target: _rowKey,
+              title: l10n.guideAppsRowTitle,
+              body: l10n.guideAppsRowBody,
             ),
           ],
+          child: Column(
+            children: [
+              Column(
+                key: _searchKey,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: pageInsets(
+                      context,
+                    ).copyWith(bottom: AppSpacing.sm),
+                    child: TextField(
+                      onChanged: context.read<AppsFilterCubit>().setQuery,
+                      decoration: InputDecoration(
+                        hintText: l10n.appsSearchHint,
+                        prefixIcon: const Icon(Icons.search),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: AppDimensions.filterChipHeight + AppSpacing.sm,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: pageInsets(context).left,
+                      ),
+                      children: [
+                        for (final option in AppsFilter.values)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: AppSpacing.sm,
+                            ),
+                            child: FilterChip(
+                              selected: filter.filter == option,
+                              label: Text(switch (option) {
+                                AppsFilter.all => l10n.appsFilterAll(
+                                  filter.count(report.apps, option),
+                                ),
+                                AppsFilter.highRisk => l10n.appsFilterHighRisk(
+                                  filter.count(report.apps, option),
+                                ),
+                                AppsFilter.camera => l10n.appsFilterCamera(
+                                  filter.count(report.apps, option),
+                                ),
+                                AppsFilter.microphone =>
+                                  l10n.appsFilterMicrophone(
+                                    filter.count(report.apps, option),
+                                  ),
+                              }),
+                              onSelected: (_) => context
+                                  .read<AppsFilterCubit>()
+                                  .setFilter(option),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: visible.isEmpty
+                    ? MessageView(
+                        icon: Icons.search_off,
+                        title: l10n.appsNoMatchTitle,
+                        message: l10n.appsNoMatchBody,
+                      )
+                    : ListView.builder(
+                        padding: pageInsets(context),
+                        itemCount: visible.length,
+                        itemBuilder: (context, index) {
+                          final audit = visible[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSpacing.sm,
+                            ),
+                            child: _AppRow(
+                              key: index == 0 ? _rowKey : null,
+                              audit: audit,
+                              selected:
+                                  audit.app.packageName == selectedPackage,
+                              onTap: () =>
+                                  context.go('/apps/${audit.app.packageName}'),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+              Padding(
+                padding: pageInsets(context),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.appsMonitored(report.apps.length),
+                        style: context.textStyles.bodySmall,
+                      ),
+                    ),
+                    FilledButton.tonal(
+                      onPressed: () => context.read<AuditCubit>().scan(),
+                      child: Text(l10n.appsRescan),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -207,6 +244,7 @@ class _AppRow extends StatelessWidget {
     required this.audit,
     required this.selected,
     required this.onTap,
+    super.key,
   });
 
   final AppAudit audit;

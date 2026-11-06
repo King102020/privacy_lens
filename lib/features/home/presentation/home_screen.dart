@@ -6,6 +6,8 @@ import '../../../core/design_system/app_dimensions.dart';
 import '../../../core/design_system/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/extensions/context_extensions.dart';
+import '../../../shared/guide/spotlight_tour.dart';
+import '../../../shared/guide/tab_guide.dart';
 import '../../../shared/presentation/failure_text.dart';
 import '../../../shared/presentation/formatters.dart';
 import '../../../shared/presentation/label_maps.dart';
@@ -24,6 +26,12 @@ import '../../audit/domain/entities/finding.dart';
 import '../../audit/domain/entities/severity.dart';
 import '../../audit/presentation/audit_cubit.dart';
 import '../../trackers/presentation/tracker_shield_cubit.dart';
+
+final _startKey = GlobalKey(debugLabel: 'tour.home.start');
+final _scoreKey = GlobalKey(debugLabel: 'tour.home.score');
+final _scanKey = GlobalKey(debugLabel: 'tour.home.scan');
+final _glanceKey = GlobalKey(debugLabel: 'tour.home.glance');
+final _discoveriesKey = GlobalKey(debugLabel: 'tour.home.discoveries');
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -71,12 +79,24 @@ class _EmptyHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MessageView(
-      icon: Icons.shield_outlined,
-      title: context.l10n.homeEmptyTitle,
-      message: context.l10n.homeEmptyBody,
-      actionLabel: context.l10n.homeRunAudit,
-      onAction: onScan,
+    return TabTour(
+      id: TabGuideIds.homeStart,
+      ready: true,
+      steps: (context) => [
+        TourStep(
+          target: _startKey,
+          title: context.l10n.guideHomeStartTitle,
+          body: context.l10n.guideHomeStartBody,
+        ),
+      ],
+      child: MessageView(
+        icon: Icons.shield_outlined,
+        title: context.l10n.homeEmptyTitle,
+        message: context.l10n.homeEmptyBody,
+        actionLabel: context.l10n.homeRunAudit,
+        onAction: onScan,
+        actionKey: _startKey,
+      ),
     );
   }
 }
@@ -94,119 +114,159 @@ class _ReadyHome extends StatelessWidget {
     final micCamera = report.countApps(
       (app) => app.has(Capability.microphone) || app.has(Capability.camera),
     );
-    return ListView(
-      padding: pageInsets(context),
-      children: [
-        const _UsageAccessBanner(),
-        SurfaceCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.verified_outlined, color: context.colors.primary),
-                  const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    l10n.homeDevicePosture,
-                    style: context.textStyles.titleSmall,
-                  ),
-                  const Spacer(),
-                  PostureBadge(level: report.posture.level),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                report.posture.level.label(l10n),
-                style: context.textStyles.headlineSmall,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Row(
-                children: [
-                  _PostureRing(score: report.posture.score),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Text(
-                      l10n.homePostureSummary(
-                        report.apps.length,
-                        micCamera,
-                        report.appsWithTrackers,
+    final discoveries = _discoveries(context, report, now);
+    return TabTour(
+      id: TabGuideIds.home,
+      ready: !scanning,
+      steps: (context) => [
+        TourStep(
+          target: _scoreKey,
+          title: l10n.guideHomeScoreTitle,
+          body: l10n.guideHomeScoreBody,
+        ),
+        TourStep(
+          target: _scanKey,
+          title: l10n.guideHomeScanTitle,
+          body: l10n.guideHomeScanBody,
+        ),
+        TourStep(
+          target: _glanceKey,
+          title: l10n.guideHomeGlanceTitle,
+          body: l10n.guideHomeGlanceBody,
+        ),
+        TourStep(
+          target: _discoveriesKey,
+          title: l10n.guideHomeDiscoveriesTitle,
+          body: l10n.guideHomeDiscoveriesBody,
+        ),
+      ],
+      child: ListView(
+        padding: pageInsets(context),
+        children: [
+          const _UsageAccessBanner(),
+          SurfaceCard(
+            key: _scoreKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.verified_outlined,
+                      color: context.colors.primary,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      l10n.homeDevicePosture,
+                      style: context.textStyles.titleSmall,
+                    ),
+                    const Spacer(),
+                    PostureBadge(level: report.posture.level),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  report.posture.level.label(l10n),
+                  style: context.textStyles.headlineSmall,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Row(
+                  children: [
+                    _PostureRing(score: report.posture.score),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Text(
+                        l10n.homePostureSummary(
+                          report.apps.length,
+                          micCamera,
+                          report.appsWithTrackers,
+                        ),
+                        style: context.textStyles.bodyMedium,
                       ),
-                      style: context.textStyles.bodyMedium,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                SizedBox(
+                  key: _scanKey,
+                  width: double.infinity,
+                  height: AppDimensions.primaryButtonHeight,
+                  child: FilledButton.icon(
+                    onPressed: scanning
+                        ? null
+                        : () => context.read<AuditCubit>().scan(),
+                    icon: scanning
+                        ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.refresh),
+                    label: Text(
+                      scanning ? l10n.homeScanning : l10n.homeRunAudit,
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              SizedBox(
-                width: double.infinity,
-                height: AppDimensions.primaryButtonHeight,
-                child: FilledButton.icon(
-                  onPressed: scanning
-                      ? null
-                      : () => context.read<AuditCubit>().scan(),
-                  icon: scanning
-                      ? const SizedBox.square(
-                          dimension: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.refresh),
-                  label: Text(scanning ? l10n.homeScanning : l10n.homeRunAudit),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                l10n.homeLastScanned(formatTodayTime(report.completedAt, l10n)),
-                style: context.textStyles.bodySmall?.copyWith(
-                  color: context.colors.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-        SectionHeader(title: l10n.homeTelemetryGlimpse),
-        BlocBuilder<TrackerShieldCubit, TrackerShieldState>(
-          builder: (context, shield) {
-            final blocked = shield is TrackerShieldReady
-                ? shield.activity.totalBlocked
-                : 0;
-            return Row(
-              children: [
-                Expanded(
-                  child: _StatTile(
-                    icon: Icons.location_on_outlined,
-                    value: '${report.appsWithLocation}',
-                    label: l10n.homeAppsWithLocation,
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  l10n.homeLastScanned(
+                    formatTodayTime(report.completedAt, l10n),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: _StatTile(
-                    icon: Icons.mic_none,
-                    value: '${report.appsWithMicrophone}',
-                    label: l10n.homeAppsWithMicrophone,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: _StatTile(
-                    icon: Icons.block,
-                    value: '$blocked',
-                    label: l10n.homeTrackersBlocked,
+                  style: context.textStyles.bodySmall?.copyWith(
+                    color: context.colors.onSurfaceVariant,
                   ),
                 ),
               ],
-            );
-          },
-        ),
-        SectionHeader(
-          title: l10n.homeKeyDiscoveries,
-          trailing: TextButton(
-            onPressed: () => context.go('/findings'),
-            child: Text(l10n.homeViewAll),
+            ),
           ),
-        ),
-        ..._discoveries(context, report, now),
-      ],
+          SectionHeader(title: l10n.homeTelemetryGlimpse),
+          BlocBuilder<TrackerShieldCubit, TrackerShieldState>(
+            builder: (context, shield) {
+              final blocked = shield is TrackerShieldReady
+                  ? shield.activity.totalBlocked
+                  : 0;
+              return Row(
+                key: _glanceKey,
+                children: [
+                  Expanded(
+                    child: _StatTile(
+                      icon: Icons.location_on_outlined,
+                      value: '${report.appsWithLocation}',
+                      label: l10n.homeAppsWithLocation,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: _StatTile(
+                      icon: Icons.mic_none,
+                      value: '${report.appsWithMicrophone}',
+                      label: l10n.homeAppsWithMicrophone,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: _StatTile(
+                      icon: Icons.block,
+                      value: '$blocked',
+                      label: l10n.homeTrackersBlocked,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+          SectionHeader(
+            title: l10n.homeKeyDiscoveries,
+            trailing: TextButton(
+              onPressed: () => context.go('/findings'),
+              child: Text(l10n.homeViewAll),
+            ),
+          ),
+          // Only the first discovery is pointed at; the tour skips it when
+          // the scan found nothing.
+          for (final (i, card) in discoveries.indexed)
+            i == 0 ? KeyedSubtree(key: _discoveriesKey, child: card) : card,
+        ],
+      ),
     );
   }
 

@@ -18,42 +18,118 @@ class AppLocalizationsEn extends AppLocalizations {
   String get localOnlyBanner => 'Zero telemetry · 100% on-device';
 
   @override
-  String get guideGotIt => 'Got it';
+  String get guideNext => 'Next';
 
   @override
-  String get guideHomeTitle => 'Home';
+  String get guideDone => 'Done';
 
   @override
-  String get guideHomeBody =>
-      'Run a scan to see permissions and tracker libraries. Nothing leaves this phone.';
+  String get guideSkip => 'Skip';
 
   @override
-  String get guideAppsTitle => 'Apps';
+  String guideStepOf(int step, int count) {
+    return '$step of $count';
+  }
 
   @override
-  String get guideAppsBody =>
-      'Each app’s grants, usage, and known libraries. Open one to review it.';
+  String get guideHomeStartTitle => 'Start here';
 
   @override
-  String get guideFindingsTitle => 'Findings';
+  String get guideHomeStartBody =>
+      'Scan this phone for ad code and risky access.';
 
   @override
-  String get guideFindingsBody =>
-      'Issues from the latest scan, grouped by how serious they are.';
+  String get guideHomeScoreTitle => 'Your privacy score';
 
   @override
-  String get guideTrackersTitle => 'Tracker Shield';
+  String get guideHomeScoreBody =>
+      'Lower when apps get risky access or carry trackers.';
 
   @override
-  String get guideTrackersBody =>
-      'This switch filters tracker hostnames on the phone. It cannot hide ads already drawn in a page.';
+  String get guideHomeScanTitle => 'Scan again anytime';
 
   @override
-  String get guideSettingsTitle => 'Settings';
+  String get guideHomeScanBody =>
+      'Re-checks apps, permissions, and tracker code.';
 
   @override
-  String get guideSettingsBody =>
-      'Retention, export, and wipe stay on this phone. Replay these tips anytime.';
+  String get guideHomeGlanceTitle => 'At a glance';
+
+  @override
+  String get guideHomeGlanceBody =>
+      'Apps using location, mic, or camera, and trackers blocked.';
+
+  @override
+  String get guideHomeDiscoveriesTitle => 'Fix these first';
+
+  @override
+  String get guideHomeDiscoveriesBody =>
+      'Your riskiest findings. Tap one to act.';
+
+  @override
+  String get guideAppsSearchTitle => 'Find any app';
+
+  @override
+  String get guideAppsSearchBody =>
+      'Search, or filter by risk, camera, or mic.';
+
+  @override
+  String get guideAppsRowTitle => 'Open an app';
+
+  @override
+  String get guideAppsRowBody =>
+      'See its permissions, tracker code, and usage.';
+
+  @override
+  String get guideFindingsFilterTitle => 'Focus';
+
+  @override
+  String get guideFindingsFilterBody =>
+      'Show only high risk, trackers, or permissions.';
+
+  @override
+  String get guideFindingsCardTitle => 'One issue, one fix';
+
+  @override
+  String get guideFindingsCardBody => 'The button opens the right setting.';
+
+  @override
+  String get guideShieldTitle => 'Tracker Shield';
+
+  @override
+  String get guideShieldBody =>
+      'Blocks tracker lookups on this phone. DNS only.';
+
+  @override
+  String get guideShieldCategoriesTitle => 'Choose what to block';
+
+  @override
+  String get guideShieldCategoriesBody =>
+      'Ads, analytics, attribution, profiling.';
+
+  @override
+  String get guideShieldChartTitle => 'When apps call trackers';
+
+  @override
+  String get guideShieldChartBody => 'Blocked lookups by hour.';
+
+  @override
+  String get guideShieldLimitsTitle => 'What it can\'t block';
+
+  @override
+  String get guideShieldLimitsBody => 'Private DNS, other VPNs, in-page ads.';
+
+  @override
+  String get guideSettingsDataTitle => 'Your data, on this phone';
+
+  @override
+  String get guideSettingsDataBody => 'Keep it 7–90 days, export, or wipe.';
+
+  @override
+  String get guideSettingsReplayTitle => 'See these tips again';
+
+  @override
+  String get guideSettingsReplayBody => 'Replays every tab\'s tour.';
 
   @override
   String get settingsReplayTips => 'Replay tips';

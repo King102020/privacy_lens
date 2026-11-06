@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/design_system/app_dimensions.dart';
 import '../../../core/design_system/app_spacing.dart';
 import '../../../shared/extensions/context_extensions.dart';
+import '../../../shared/guide/spotlight_tour.dart';
+import '../../../shared/guide/tab_guide.dart';
 import '../../../shared/presentation/failure_text.dart';
 import '../../../shared/presentation/label_maps.dart';
 import '../../../shared/widgets/app_icon.dart';
@@ -22,6 +24,9 @@ import '../../audit/domain/entities/finding.dart';
 import '../../audit/domain/entities/severity.dart';
 import '../../audit/presentation/audit_cubit.dart';
 import 'findings_filter_cubit.dart';
+
+final _filterKey = GlobalKey(debugLabel: 'tour.findings.filter');
+final _cardKey = GlobalKey(debugLabel: 'tour.findings.card');
 
 class FindingsScreen extends StatelessWidget {
   const FindingsScreen({super.key});
@@ -83,68 +88,97 @@ class _FindingsList extends StatelessWidget {
     return BlocBuilder<FindingsFilterCubit, FindingsFilterState>(
       builder: (context, filterState) {
         final visible = filterState.apply(report.findings);
-        return Column(
-          children: [
-            Padding(
-              padding: pageInsets(context).copyWith(bottom: 0),
-              child: Text(
-                l10n.findingsIdentified(report.findings.length),
-                style: context.textStyles.bodyMedium,
-              ),
+        final groups = _groups(visible);
+        return TabTour(
+          id: TabGuideIds.findings,
+          ready: groups.isNotEmpty,
+          steps: (context) => [
+            TourStep(
+              target: _filterKey,
+              title: l10n.guideFindingsFilterTitle,
+              body: l10n.guideFindingsFilterBody,
             ),
-            SizedBox(
-              height: AppDimensions.filterChipHeight + AppSpacing.md,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(
-                  horizontal: pageInsets(context).left,
-                ),
-                children: [
-                  for (final option in FindingsFilter.values)
-                    Padding(
-                      padding: const EdgeInsets.only(right: AppSpacing.sm),
-                      child: FilterChip(
-                        selected: filterState.filter == option,
-                        label: Text(switch (option) {
-                          FindingsFilter.all => l10n.findingsFilterAll(
-                            filterState.count(report.findings, option),
-                          ),
-                          FindingsFilter.high => l10n.findingsFilterHigh(
-                            filterState.count(report.findings, option),
-                          ),
-                          FindingsFilter.trackers =>
-                            l10n.findingsFilterTrackers(
-                              filterState.count(report.findings, option),
-                            ),
-                          FindingsFilter.permissions =>
-                            l10n.findingsFilterPermissions(
-                              filterState.count(report.findings, option),
-                            ),
-                        }),
-                        onSelected: (_) => context
-                            .read<FindingsFilterCubit>()
-                            .setFilter(option),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: visible.isEmpty
-                  ? MessageView(
-                      icon: Icons.verified_outlined,
-                      title: l10n.findingsEmptyTitle,
-                      message: l10n.findingsEmptyBody,
-                    )
-                  : ListView(
-                      padding: pageInsets(context),
-                      children: [
-                        for (final group in _groups(visible))
-                          _FindingGroup(report: report, findings: group),
-                      ],
-                    ),
+            TourStep(
+              target: _cardKey,
+              title: l10n.guideFindingsCardTitle,
+              body: l10n.guideFindingsCardBody,
             ),
           ],
+          child: Column(
+            children: [
+              Column(
+                key: _filterKey,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: pageInsets(context).copyWith(bottom: 0),
+                    child: Text(
+                      l10n.findingsIdentified(report.findings.length),
+                      style: context.textStyles.bodyMedium,
+                    ),
+                  ),
+                  SizedBox(
+                    height: AppDimensions.filterChipHeight + AppSpacing.md,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: pageInsets(context).left,
+                      ),
+                      children: [
+                        for (final option in FindingsFilter.values)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: AppSpacing.sm,
+                            ),
+                            child: FilterChip(
+                              selected: filterState.filter == option,
+                              label: Text(switch (option) {
+                                FindingsFilter.all => l10n.findingsFilterAll(
+                                  filterState.count(report.findings, option),
+                                ),
+                                FindingsFilter.high => l10n.findingsFilterHigh(
+                                  filterState.count(report.findings, option),
+                                ),
+                                FindingsFilter.trackers =>
+                                  l10n.findingsFilterTrackers(
+                                    filterState.count(report.findings, option),
+                                  ),
+                                FindingsFilter.permissions =>
+                                  l10n.findingsFilterPermissions(
+                                    filterState.count(report.findings, option),
+                                  ),
+                              }),
+                              onSelected: (_) => context
+                                  .read<FindingsFilterCubit>()
+                                  .setFilter(option),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: visible.isEmpty
+                    ? MessageView(
+                        icon: Icons.verified_outlined,
+                        title: l10n.findingsEmptyTitle,
+                        message: l10n.findingsEmptyBody,
+                      )
+                    : ListView(
+                        padding: pageInsets(context),
+                        children: [
+                          for (final (i, group) in groups.indexed)
+                            _FindingGroup(
+                              report: report,
+                              findings: group,
+                              cardKey: i == 0 ? _cardKey : null,
+                            ),
+                        ],
+                      ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -167,10 +201,15 @@ class _FindingsList extends StatelessWidget {
 }
 
 class _FindingGroup extends StatelessWidget {
-  const _FindingGroup({required this.report, required this.findings});
+  const _FindingGroup({
+    required this.report,
+    required this.findings,
+    this.cardKey,
+  });
 
   final AuditReport report;
   final List<Finding> findings;
+  final Key? cardKey;
 
   @override
   Widget build(BuildContext context) {
@@ -191,6 +230,7 @@ class _FindingGroup extends StatelessWidget {
             trailing: Text(l10n.findingsAppCount(findings.length)),
           ),
           SurfaceCard(
+            key: cardKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

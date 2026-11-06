@@ -112,71 +112,209 @@ abstract class AppLocalizations {
   /// **'Zero telemetry · 100% on-device'**
   String get localOnlyBanner;
 
-  /// No description provided for @guideGotIt.
+  /// No description provided for @guideNext.
   ///
   /// In en, this message translates to:
-  /// **'Got it'**
-  String get guideGotIt;
+  /// **'Next'**
+  String get guideNext;
 
-  /// No description provided for @guideHomeTitle.
+  /// No description provided for @guideDone.
   ///
   /// In en, this message translates to:
-  /// **'Home'**
-  String get guideHomeTitle;
+  /// **'Done'**
+  String get guideDone;
 
-  /// No description provided for @guideHomeBody.
+  /// No description provided for @guideSkip.
   ///
   /// In en, this message translates to:
-  /// **'Run a scan to see permissions and tracker libraries. Nothing leaves this phone.'**
-  String get guideHomeBody;
+  /// **'Skip'**
+  String get guideSkip;
 
-  /// No description provided for @guideAppsTitle.
+  /// No description provided for @guideStepOf.
   ///
   /// In en, this message translates to:
-  /// **'Apps'**
-  String get guideAppsTitle;
+  /// **'{step} of {count}'**
+  String guideStepOf(int step, int count);
 
-  /// No description provided for @guideAppsBody.
+  /// No description provided for @guideHomeStartTitle.
   ///
   /// In en, this message translates to:
-  /// **'Each app’s grants, usage, and known libraries. Open one to review it.'**
-  String get guideAppsBody;
+  /// **'Start here'**
+  String get guideHomeStartTitle;
 
-  /// No description provided for @guideFindingsTitle.
+  /// No description provided for @guideHomeStartBody.
   ///
   /// In en, this message translates to:
-  /// **'Findings'**
-  String get guideFindingsTitle;
+  /// **'Scan this phone for ad code and risky access.'**
+  String get guideHomeStartBody;
 
-  /// No description provided for @guideFindingsBody.
+  /// No description provided for @guideHomeScoreTitle.
   ///
   /// In en, this message translates to:
-  /// **'Issues from the latest scan, grouped by how serious they are.'**
-  String get guideFindingsBody;
+  /// **'Your privacy score'**
+  String get guideHomeScoreTitle;
 
-  /// No description provided for @guideTrackersTitle.
+  /// No description provided for @guideHomeScoreBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower when apps get risky access or carry trackers.'**
+  String get guideHomeScoreBody;
+
+  /// No description provided for @guideHomeScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan again anytime'**
+  String get guideHomeScanTitle;
+
+  /// No description provided for @guideHomeScanBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-checks apps, permissions, and tracker code.'**
+  String get guideHomeScanBody;
+
+  /// No description provided for @guideHomeGlanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'At a glance'**
+  String get guideHomeGlanceTitle;
+
+  /// No description provided for @guideHomeGlanceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps using location, mic, or camera, and trackers blocked.'**
+  String get guideHomeGlanceBody;
+
+  /// No description provided for @guideHomeDiscoveriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix these first'**
+  String get guideHomeDiscoveriesTitle;
+
+  /// No description provided for @guideHomeDiscoveriesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your riskiest findings. Tap one to act.'**
+  String get guideHomeDiscoveriesBody;
+
+  /// No description provided for @guideAppsSearchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find any app'**
+  String get guideAppsSearchTitle;
+
+  /// No description provided for @guideAppsSearchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Search, or filter by risk, camera, or mic.'**
+  String get guideAppsSearchBody;
+
+  /// No description provided for @guideAppsRowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open an app'**
+  String get guideAppsRowTitle;
+
+  /// No description provided for @guideAppsRowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See its permissions, tracker code, and usage.'**
+  String get guideAppsRowBody;
+
+  /// No description provided for @guideFindingsFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus'**
+  String get guideFindingsFilterTitle;
+
+  /// No description provided for @guideFindingsFilterBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Show only high risk, trackers, or permissions.'**
+  String get guideFindingsFilterBody;
+
+  /// No description provided for @guideFindingsCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One issue, one fix'**
+  String get guideFindingsCardTitle;
+
+  /// No description provided for @guideFindingsCardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The button opens the right setting.'**
+  String get guideFindingsCardBody;
+
+  /// No description provided for @guideShieldTitle.
   ///
   /// In en, this message translates to:
   /// **'Tracker Shield'**
-  String get guideTrackersTitle;
+  String get guideShieldTitle;
 
-  /// No description provided for @guideTrackersBody.
+  /// No description provided for @guideShieldBody.
   ///
   /// In en, this message translates to:
-  /// **'This switch filters tracker hostnames on the phone. It cannot hide ads already drawn in a page.'**
-  String get guideTrackersBody;
+  /// **'Blocks tracker lookups on this phone. DNS only.'**
+  String get guideShieldBody;
 
-  /// No description provided for @guideSettingsTitle.
+  /// No description provided for @guideShieldCategoriesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Settings'**
-  String get guideSettingsTitle;
+  /// **'Choose what to block'**
+  String get guideShieldCategoriesTitle;
 
-  /// No description provided for @guideSettingsBody.
+  /// No description provided for @guideShieldCategoriesBody.
   ///
   /// In en, this message translates to:
-  /// **'Retention, export, and wipe stay on this phone. Replay these tips anytime.'**
-  String get guideSettingsBody;
+  /// **'Ads, analytics, attribution, profiling.'**
+  String get guideShieldCategoriesBody;
+
+  /// No description provided for @guideShieldChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When apps call trackers'**
+  String get guideShieldChartTitle;
+
+  /// No description provided for @guideShieldChartBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked lookups by hour.'**
+  String get guideShieldChartBody;
+
+  /// No description provided for @guideShieldLimitsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What it can\'t block'**
+  String get guideShieldLimitsTitle;
+
+  /// No description provided for @guideShieldLimitsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Private DNS, other VPNs, in-page ads.'**
+  String get guideShieldLimitsBody;
+
+  /// No description provided for @guideSettingsDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data, on this phone'**
+  String get guideSettingsDataTitle;
+
+  /// No description provided for @guideSettingsDataBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it 7–90 days, export, or wipe.'**
+  String get guideSettingsDataBody;
+
+  /// No description provided for @guideSettingsReplayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See these tips again'**
+  String get guideSettingsReplayTitle;
+
+  /// No description provided for @guideSettingsReplayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Replays every tab\'s tour.'**
+  String get guideSettingsReplayBody;
 
   /// No description provided for @settingsReplayTips.
   ///
